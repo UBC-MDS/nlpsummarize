@@ -1,4 +1,4 @@
-### Function authored by Vignesh Chandrasekaran
+### Function authored by Vignesh Chandrasekaran on 26-Feb-2020
 
 def summary_4_sentence_stopwords_freq_detection(pd_df_col):
     '''
