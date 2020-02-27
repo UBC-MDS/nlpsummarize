@@ -23,7 +23,7 @@ def get_part_of_speech(pd_df_col):
                                          and I would love getting a 
                                          coffee. However, startbucks 
                                          is closed.']})
-        >>> summary_4(ex['text_col'])
+        >>> get_part_of_speech(ex['text_col'])
         [1]  |   verbs    | prepositions | adjectives |   nouns   |  articles  |
              |    0.2     |     0.11     |     0.3    |    0.06   |     0.18   |
     ------------
