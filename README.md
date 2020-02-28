@@ -17,7 +17,9 @@ pip install -i https://test.pypi.org/simple/ nlpsummarize
 
 ### Dependencies
 
-- TODO
+- pandas==1.0.1
+- nltk==3.4.5
+- textblob==0.15.3
 
 ### Usage
 

@@ -2,7 +2,7 @@
 # date: 26 Feb 2020
 
 
-def polarity(df):
+def polarity(df_col):
     """
     This method will check and compute the polarity
     of the text data. This method will return:
@@ -12,18 +12,17 @@ def polarity(df):
             
     -----------
     Arguments:
-    df(Dataframe) : a pandas dataframe having textual data within it
+    df_col (pd.DataFrame) : a column of pandas dataframe having textual data within it
     
     -----------
     Return:
-    nop(integer): number of positive words
-    nong(integer): number of negative words
-    non(integer): number of neutral words
+    pd.DataFrame with columns number of positive, negative and neutral words
+
     
     -----------
     Example:
-    >>>> df = pd.DataFrame({'text': 'He is a good guy. 
-                                    This is the worst coffee I had in my life.'})
+    >>>> df = pd.DataFrame({'text': ['He is a good guy.
+                                    This is the worst coffee I had in my life.']})
                                     
     >>>> polarity(df['text'])
      [1]  | positive words | negative words | neutral words |
