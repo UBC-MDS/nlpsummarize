@@ -12,6 +12,8 @@ One of the most relevant applications of machine learning for corporations globa
 
 Unfortunately, there are few tools today which provide summary statistics on textual data that a user may want to analyze. Our goal with this package is to provide users with a simple and flexible tool to gather key insights that would be useful during the exploratory data analysis phase of the data science workflow. 
 
+Our library specifically will make extensive use of pre-existing packages in the Python eco-system. We will use the [`nltk`](https://www.nltk.org/)  library to build most of the sentiment analysis functions while also leveraging well-known packages such as [`pandas`](https://pandas.pydata.org/) to aid in the overall presentation of our final output results. 
+
 
 ### Installation:
 
@@ -30,9 +32,6 @@ Below are several functions in our Python package:
 `polarity`: This function will check the overall sentiment of the data by assessing the number of negative, positive and neutral words in the textual data. 
 
 `sentence_stopwords_freq`: This function will check the proportion on the number of sentences, stop words and also output high frequency words in the textual data. 
-
-
-Our library specifically will make extensive use of pre-existing packages in the Python eco-system. We will use the [`nltk`](https://www.nltk.org/)  library to build most of the sentiment analysis functions while also leveraging well-known packages such as [`pandas`](https://pandas.pydata.org/) to aid in the overall presentation of our final output results. 
 
 ### Dependencies
 
