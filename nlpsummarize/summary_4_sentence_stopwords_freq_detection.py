@@ -1,4 +1,5 @@
-### Function authored by Vignesh Chandrasekaran on 26-Feb-2020
+# Author : Vignesh Chandrasekaran 
+# Date : 26-Feb-2020
 
 def summary_4_sentence_stopwords_freq_detection(pd_df_col):
     '''
@@ -14,17 +15,18 @@ def summary_4_sentence_stopwords_freq_detection(pd_df_col):
     
     ------------
     Return
-        nos (integer)      : number of sentences present in a column of the dataframe
-        nosw (integer)     : number of stop-words present in a column of the dataframe
-        list_hf (integer)  : list of top 5 frequetly encountered words
-        hf (integer)       : number of times the high frequency word was encountered.
+        dataframe  with the following elements:
+        nos       : number of sentences present in a column of the dataframe
+        nosw      : number of stop-words present in a column of the dataframe
+        list_hf   : list of top 5 frequetly encountered words
+        hf        : number of times the high frequency word was encountered.
     
     ------------
     Example
-        >>> ex = pd.DataFrame({'text_col' : 'Today is a beautiful Monday
+        >>> ex = pd.DataFrame({'text_col' : ['Today is a beautiful Monday
                                          and I would love getting a 
                                          coffee. However, startbucks 
-                                         is closed.'})
+                                         is closed.']})
         
         >>> summary_4(ex['text_col'])
         
