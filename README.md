@@ -37,11 +37,6 @@ Below are several functions in our Python package:
 
 ### Usage
 
-- TODO
-
-
-### Example
-
 This is a basic example which shows you how to generate a summary:
 
 ``` python
