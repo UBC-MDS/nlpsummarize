@@ -1,9 +1,5 @@
 ## nlpsummarize 
 
-![](https://github.com/vigchandra/nlpsummarize/workflows/build/badge.svg) [![codecov](https://codecov.io/gh/vigchandra/nlpsummarize/branch/master/graph/badge.svg)](https://codecov.io/gh/vigchandra/nlpsummarize) ![Release](https://github.com/vigchandra/nlpsummarize/workflows/Release/badge.svg)
-
-[![Documentation Status](https://readthedocs.org/projects/nlpsummarize/badge/?version=latest)](https://nlpsummarize.readthedocs.io/en/latest/?badge=latest)
-
 Python package that provides a nice summary of all character columns in a pandas dataframe.
 
 ### Overview:
@@ -43,8 +39,32 @@ Below are several functions in our Python package:
 
 - TODO
 
-### Documentation
-The official documentation is hosted on Read the Docs: <https://nlpsummarize.readthedocs.io/en/latest/>
+
+### Example
+
+This is a basic example which shows you how to generate a summary:
+
+``` python
+
+import nlpsummarizer
+df = pd.DataFrame({'text_col' : ['I love travelling to Japan and
+                                eating Mexican food but I can only speak
+                                English!']})
+detect_language(df['text_col'])
+[1]  'English'
+
+get_part_of_speech(df['text_col'])
+[2]  |   verbs    | prepositions | adjectives |   nouns   |  articles  |
+     |    0.2     |     0.11     |     0.3    |    0.06   |     0.18   |
+
+get_polarity(df['text_col'])
+[3] | positive words | negative words | neutral words |
+    |         3      |           0    |    15         |
+
+summary_4(df['text_col'])
+[4] | number of sentences | number of stop words | high freq. words |
+    |         1           |           4          |    I(2)          |
+```
 
 ### Credits
 This package was created with Cookiecutter and the UBC-MDS/cookiecutter-ubc-mds project template, modified from the [pyOpenSci/cookiecutter-pyopensci](https://github.com/pyOpenSci/cookiecutter-pyopensci) project template and the [audreyr/cookiecutter-pypackage](https://github.com/audreyr/cookiecutter-pypackage).
