@@ -28,7 +28,7 @@ def summary_4_sentence_stopwords_freq_detection(pd_df_col):
                                          coffee. However, startbucks 
                                          is closed.']})
         
-        >>> summary_4(ex['text_col'])
+        >>> summary_4_sentence_stopwords_freq_detection(ex['text_col'])
         
         [1]  | number of sentences | number of stop words | high freq. words |
              |         2           |           6          |    is(2), a(2)   |    
