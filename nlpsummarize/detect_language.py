@@ -1,5 +1,9 @@
 # author: Samneet Chepal
 # date: 26 Feb 2020
+import pandas as pd
+import fasttext
+import pycountry
+from pycountry import languages
 
 def detect_language(pd_df_col):
     '''
@@ -23,4 +27,13 @@ def detect_language(pd_df_col):
         [1]  'English'
     ------------
     '''
-    pass
+    pretrained_model_path = '/tmp/lid.176.bin'
+    model = fasttext.load_model(pretrained_model_path)
+    predictions = model.predict([text])
+    x = predictions[0][0][0][-2:]
+    language_name = languages.get(alpha_2=x).name
+    return language_name
+
+
+def test_language_textual(input_text):
+    assert type(input_text) == str
