@@ -1,6 +1,10 @@
 # author: Karlos Muradyan
 # date: 26 Feb 2020
 
+import nltk
+import pandas as pd
+
+
 def get_part_of_speech(pd_df_col):
     '''
     This function generates statistics about the proportions of following
@@ -28,5 +32,38 @@ def get_part_of_speech(pd_df_col):
              |    0.2     |     0.11     |     0.3    |    0.06   |     0.18   |
     ------------
     '''
+    lookup_dict = {'ADJ': 'adjective',
+                   'ADP': 'adposition',
+                   'ADV': 'adverb',
+                   'CONJ': 'conjuction',
+                   'DET': 'article',
+                   'NOUN': 'noun',
+                   'NUM': 'numeral',
+                   'PRT': 'particle',
+                   'PRON': 'pronoun',
+                   'VERB': 'verb',
+                   '.': 'punctuation'}
 
-    pass
+    try:
+        concatenated_text = '\n'.join(pd_df_col)
+        concatenated_text = nltk.word_tokenize(concatenated_text)
+        tags = nltk.pos_tag(concatenated_text, tagset='universal')
+    except LookupError as e:
+        print("If you haven't done so, please before running get_part_of_speech function please run:\n\n>>> nltk.download('punkt')\n>>> nltk.download('averaged_perceptron_tagger')\n>>> nltk.download('universal_tagset')")
+        return None
+
+
+    counts = {k: 0 for k in lookup_dict.keys()}
+    for word in tags:
+        if word[1] in counts:
+            counts[word[1]] += 1
+
+    counts = {lookup_dict[k]: v/len(tags) for k, v in counts.items()}
+    print(counts.keys())
+    return pd.DataFrame(counts, index=[0])
+
+
+if __name__ == '__main__':
+    ex = pd.DataFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']})
+    print(get_part_of_speech(ex['text_col']))
+        
