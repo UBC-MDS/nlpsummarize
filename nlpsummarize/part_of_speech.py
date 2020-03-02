@@ -5,7 +5,7 @@ import nltk
 import pandas as pd
 
 
-def get_part_of_speech(pd_df_col):
+def get_part_of_speech(pd_df_col, show_only=['adjective', 'noun', 'verb']):
     '''
     This function generates statistics about the proportions of following
     parts of speech in the given column::
@@ -18,6 +18,10 @@ def get_part_of_speech(pd_df_col):
     Argument
         pd_df_col (pd.Series): column of pandas dataframe (i.e. Series)
                         containing text data.
+        show_only (list-like): names of the part of speech of put into the final result.
+            If False or None, all part of speech will be shown (i.e. ['adjective', 'adposition',
+            'adverb', 'conjuction', 'article', 'noun', 'numeral', 'particle', 'pronoun', 'verb',
+            'punctuation']). Default: ['adjective', 'noun', 'verb'].
     ------------
     Return
         pd.DataFrame with columns verbs, prepositions, adjectives, nouns, articles
@@ -44,12 +48,18 @@ def get_part_of_speech(pd_df_col):
                    'VERB': 'verb',
                    '.': 'punctuation'}
 
+    if show_only:
+        lookup_dict = {k: v for k, v in lookup_dict.items() if v in show_only}
+
     try:
         concatenated_text = '\n'.join(pd_df_col)
         concatenated_text = nltk.word_tokenize(concatenated_text)
         tags = nltk.pos_tag(concatenated_text, tagset='universal')
     except LookupError as e:
-        print("If you haven't done so, please before running get_part_of_speech function please run:\n\n>>> nltk.download('punkt')\n>>> nltk.download('averaged_perceptron_tagger')\n>>> nltk.download('universal_tagset')")
+        print("If you haven't done so, please before running get_part_of_speech\
+                function please run:\n\n>>> nltk.download('punkt')\
+                \n>>> nltk.download('averaged_perceptron_tagger')\n\
+                >>> nltk.download('universal_tagset')")
         return None
 
 
@@ -59,7 +69,6 @@ def get_part_of_speech(pd_df_col):
             counts[word[1]] += 1
 
     counts = {lookup_dict[k]: v/len(tags) for k, v in counts.items()}
-    print(counts.keys())
     return pd.DataFrame(counts, index=[0])
 
 
