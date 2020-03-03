@@ -68,11 +68,13 @@ def get_part_of_speech(pd_df_col, show_only=['adjective', 'noun', 'verb']):
         if word[1] in counts:
             counts[word[1]] += 1
 
-    counts = {lookup_dict[k]: v/len(tags) for k, v in counts.items()}
+    counts = {lookup_dict[k]: round(v/len(tags), 4) for k, v in counts.items()}
     return pd.DataFrame(counts, index=[0])
 
 
 if __name__ == '__main__':
-    ex = pd.DataFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']})
-    print(get_part_of_speech(ex['text_col']))
+    # ex = pd.DataFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']})
+    # print(get_part_of_speech(ex['text_col']))
         
+    ex2 = pd.DataFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']})
+    print(get_part_of_speech(ex2['text_col']))
