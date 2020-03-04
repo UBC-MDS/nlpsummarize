@@ -24,6 +24,22 @@ def check_pos_func():
 
         assert res, 'The function should return an output even for mixture of English and non-English sentences!'
 
+    def invalid_series_input_1():
+        not_series_input = 5
+        try:
+            res = get_part_of_speech(not_series_input)
+            print('The function should not be executed when the input is not a pandas Series!!')
+        except TypeError:
+            pass
+
+    def invalid_pos_input_1():
+        initial_df = pd.DataFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']})
+        try:
+            res = get_part_of_speech(ex2['text_col'], show_only=5)
+            print('The function should not be executed when the show only input is not an iterable object!!')
+        except TypeError:
+            pass
+
     english_input_1()
     chinese_input_1()
     mixture_input_1()
