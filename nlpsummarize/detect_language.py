@@ -29,10 +29,10 @@ def detect_language(pd_df_col):
     '''
     pretrained_model_path = '/tmp/lid.176.bin'
     model = fasttext.load_model(pretrained_model_path)
-    predictions = model.predict([text])
-    x = predictions[0][0][0][-2:]
-    language_name = languages.get(alpha_2=x).name
-    return language_name
+    predictions = model.predict(pd_df_col)
+    result = predictions[0][0][-2:]
+    language = languages.get(alpha_2 = result)
+    print(language.name)
 
 
 def test_language_textual(input_text):
