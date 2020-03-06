@@ -33,7 +33,22 @@ def detect_language(pd_df_col):
     result = predictions[0][0][-2:]
     language = languages.get(alpha_2 = result)
     print(language.name)
+    return language.name
 
 
-def test_language_textual(input_text):
-    assert type(input_text) == str
+def test_language_textual():
+    test_df = pd.DataFrame({'text_col' : ['I love travelling to Japan and \
+                                eating Mexican food but I can only speak \
+                                English!']})
+    input_data = test_df['text_col'][0]
+    assert type(input_data) == str, 'The function input should be in a string format'
+
+
+def test_language_works():
+    test_df = pd.DataFrame({'english_text' : ['I am a happy person'],
+                        'mandarin_text': ['戰國策的版本存在非常多的錯誤'],
+                        'spanish_text': ['Hola mi nombre es Bill y me gustan los gatos']
+                       })
+    assert detect_language(test_df['english_text'][0]) == 'English', 'Incorrect Language'
+    assert detect_language(test_df['mandarin_text'][0]) == 'Chinese', 'Incorrect Language'
+    assert detect_language(test_df['spanish_text'][0]) == 'Spanish', 'Incorrect Language'
