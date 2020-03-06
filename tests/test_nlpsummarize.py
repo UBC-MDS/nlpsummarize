@@ -75,11 +75,4 @@ def check_pos_func():
         assert detect_language(test_df['mandarin_text'][0]) == 'Chinese', 'Incorrect Language'
         assert detect_language(test_df['spanish_text'][0]) == 'Spanish', 'Incorrect Language'
 
-    english_input_1()
-    test_english_input()
-    test_chinese_input()
-    test_mixture_input()
-    test_polarity_input()
-    test_polarity_count()
-    test_language_textual()
-    test_language_works()
+   
