@@ -1,6 +1,6 @@
 from nlpsummarize.part_of_speech import get_part_of_speech
 from nlpsummarize.polarity import polarity
-from nlpsummarize import detect_language
+from nlpsummarize.detect_language import detect_language
 import pandas as pd
 
 
