@@ -38,7 +38,7 @@ def test_pos_invalid_series_input_1():
     not_series_input = 5
     try:
         res = get_part_of_speech(not_series_input)
-        print('The function should not be executed when the input is not a pandas Series!!')
+        assert False, 'The function should not be executed when the input is not a pandas Series!!'
     except TypeError:
         pass
 
@@ -46,7 +46,7 @@ def test_invalid_pos_input_1():
     initial_df = pd.DataFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']})
     try:
         res = get_part_of_speech(ex2['text_col'], show_only=5)
-        print('The function should not be executed when the show only input is not an iterable object!!')
+        assert False, 'The function should not be executed when the show only input is not an iterable object!!'
     except TypeError:
         pass
 
