@@ -1,6 +1,8 @@
 from nlpsummarize.part_of_speech import get_part_of_speech
 from nlpsummarize.polarity import polarity
 from nlpsummarize.detect_language import detect_language
+from nlpsummarize.summary_4 import summary_4
+
 import pandas as pd
 
 
@@ -45,6 +47,21 @@ def test_polarity_count():
     res = polarity(initial_df['text_col'])
 
     assert ((res.iloc[0,0] >= 0) & (res.iloc[0,1] >= 0)) , 'Count should be positive'
+
+def test_df_summary_4():
+    test_df = pd.DataFrame({'text_col' : ['Today is a great day \
+                                and I wish I spent more time outside. I decided to go outside.\
+                                English!']})
+    input_data = test_df['text_col'][0]
+
+    assert type(input_data) == str, 'The inputss are not strings'
+
+def test_positive_summary_4():
+    initial_df = pd.DataFrame({'text_col': ['The coffee is good', 'I would like to have some']}, index = [0,1])
+    res = summary_4(initial_df['text_col'])
+
+    assert ((res.iloc[0,0] >= 0) & (res.iloc[0,1] >= 0)) , 'Count should be positive'
+    
 
 def test_language_textual():
     test_df = pd.DataFrame({'text_col' : ['I love travelling to Japan and \
