@@ -36,10 +36,10 @@ def polarity(df_col):
     
     try:
         # loading positive lexicons
-        positive_words = list(pd.read_csv('../data/positive-words.txt',skiprows=34, header = 'infer')['words'])
+        positive_words = list(pd.read_csv('data/positive-words.txt',skiprows=34, header = 'infer')['words'])
         
         # loading negative lexicons
-        negative_words = list(pd.read_csv('../data/negative-words.txt',skiprows=34, header='infer')['words'])
+        negative_words = list(pd.read_csv('data/negative-words.txt',skiprows=34, header='infer')['words'])
     
     except:
         print('Error reading Lexicons. Please check if lexicon files are in data directory...')
