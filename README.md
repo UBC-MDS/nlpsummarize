@@ -34,7 +34,8 @@ Below are several functions in our Python package:
 
 - pandas==1.0.1
 - nltk==3.4.5
-- textblob==0.15.3
+- fasttext==0.9.1
+- itertools==8.0.2
 
 ### Usage
 
