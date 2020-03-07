@@ -1,0 +1,4 @@
+This directory should contain the fasttext's pre-trained model with the following nomenclature:
+
+Link: <Paste link here>
+Path: model/lid.176.bin

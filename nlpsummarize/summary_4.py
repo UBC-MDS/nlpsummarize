@@ -46,7 +46,7 @@ def summary_4(pd_df_col, nof=3):
     '''
     
     #Concatenate all the sentences. Defaults a '.' when going from one row to another.
-    all_messages = df['text'].str.cat(sep='. ')
+    all_messages = pd_df_col.str.cat(sep='. ')
     
     #Computes the number of sentences
     number_of_sentences = len(sent_tokenize(all_messages))
@@ -75,5 +75,5 @@ def summary_4(pd_df_col, nof=3):
                          'Frequency' : [freq]})
 
 
-df = pd.read_excel('../data/text_data.xlsx')
-summary_4(df['text'])
+# df = pd.read_excel('../data/text_data.xlsx')
+# summary_4(df['text'])

@@ -27,7 +27,7 @@ def detect_language(pd_df_col):
         [1]  'English'
     ------------
     '''
-    pretrained_model_path = '/tmp/lid.176.bin'
+    pretrained_model_path = 'model/lid.176.bin'
     model = fasttext.load_model(pretrained_model_path)
     predictions = model.predict(pd_df_col)
     result = predictions[0][0][-2:]
