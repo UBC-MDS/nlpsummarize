@@ -2,7 +2,6 @@
 # date: 26 Feb 2020
 import pandas as pd
 import fasttext
-import pycountry
 from pycountry import languages
 
 def detect_language(pd_df_col):
