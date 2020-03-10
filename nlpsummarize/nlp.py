@@ -14,8 +14,8 @@ import wget
 import os
 
 class NLPFrame(pd.DataFrame):
-    def __init__(self, data, column = None):
-        super(NLPFrame, self).__init__(data)
+    def __init__(self, data, column = None, *args, **kwargs):
+        super(NLPFrame, self).__init__(data, *args, **kwargs)
 
         # For now, we support only one column
         self.column = column if column else self.select_dtypes(include='object').columns[0]
