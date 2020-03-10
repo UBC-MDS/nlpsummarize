@@ -10,6 +10,8 @@ from nltk.tokenize import sent_tokenize
 import pandas as pd
 from nltk.corpus import stopwords
 from itertools import islice
+import wget
+import os
 
 class NLPFrame(pd.DataFrame):
     def __init__(self, data, column = None):
@@ -18,26 +20,52 @@ class NLPFrame(pd.DataFrame):
         # For now, we support only one column
         self.column = column if column else self.select_dtypes(include='object').columns[0]
 
-    def get_nlp_summary(self):
-        # Check if punkt has been downloaded or not, if not do so 
+    def check_nltk_dependencies(self):
         try:
-            nltk.data.find('tokenizers/punkt')
-        except LookupError:
-            print('Downloading punkt...')
-            nltk.download('punkt')
-        
-        # Check if stopwords has been downloaded or not, if not do so 
-        try:
-            nltk.data.find('corpora/stopwords')
-        except LookupError:
-            print('Downloading stopwords...')
-            nltk.download('stopwords')
+            # Check if punkt has been downloaded or not, if not do so 
+            try:
+                nltk.data.find('tokenizers/punkt')
+            except LookupError:
+                print('Downloading punkt...')
+                nltk.download('punkt')
+            
+            # Check if stopwords has been downloaded or not, if not do so 
+            try:
+                nltk.data.find('corpora/stopwords')
+            except LookupError:
+                print('Downloading stopwords...')
+                nltk.download('stopwords')
 
-        try:
-            nltk.data.find('taggers/averaged_perceptron_tagger')
-        except LookupError:
-            print('Downloading averaged_perceptron_tagger...')
-            nltk.download('averaged_perceptron_tagger')
+            # Check if averaged perceptron tagger has been downloaded or not, if not do so 
+            try:
+                nltk.data.find('taggers/averaged_perceptron_tagger')
+            except LookupError:
+                print('Downloading averaged_perceptron_tagger...')
+                nltk.download('averaged_perceptron_tagger')
+        except:
+            print('Something went wrong when checking nltk dependencies')
+            return False
+
+        return True
+
+    def fasttext_dependencies(self):
+        path = './model/lid.176.bin'
+        if not os.path.isfile(path): 
+            try:
+                print('Downloading fasttext pre-trained model')
+                  
+                url = 'https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin'
+                wget.download(url, path)
+            except:
+                print('Something went wrong when downloading!!')
+                return False
+        return True
+
+    def get_nlp_summary(self):
+
+        if not self.check_nltk_dependencies() or not self.fasttext_dependencies():
+            print('Dependencies are not met. Please read the instructions or contact the developers for further details')
+            return None
 
         return pd.concat((
             self.detect_language(),
@@ -215,12 +243,12 @@ class NLPFrame(pd.DataFrame):
         
         pretrained_model_path = 'model/lid.176.bin'
         model = fasttext.load_model(pretrained_model_path)
-        predictions = model.predict(pd_df_col)
+        predictions = model.predict(''.join(pd_df_col))
         result = predictions[0][0][-2:]
         language = languages.get(alpha_2 = result)
         return pd.DataFrame({'language': [language.name]})
 
-    def polarity():
+    def polarity(self):
         """
         This method will check and compute the polarity
         of the text data. This method will return:
