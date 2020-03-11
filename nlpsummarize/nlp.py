@@ -61,19 +61,21 @@ class NLPFrame(pd.DataFrame):
                 return False
         return True
 
-    def get_nlp_summary(self):
+    def get_nlp_summary(self, column = ''):
+
+        column = column if column else self.column
 
         if not self.check_nltk_dependencies() or not self.fasttext_dependencies():
             print('Dependencies are not met. Please read the instructions or contact the developers for further details')
             return None
 
         return pd.concat((
-            self.detect_language(),
-            self.summary_4(),
-            self.get_part_of_speech(),
-            self.polarity()), axis=1)
+            self.detect_language(column=column),
+            self.summary_4(column=column),
+            self.get_part_of_speech(column=column),
+            self.polarity(column=column)), axis=1)
 
-    def summary_4(self, nof=3):
+    def summary_4(self, nof=3, column = ''):
         '''
         This function generates the following:
             - number of sentences, 
@@ -107,7 +109,8 @@ class NLPFrame(pd.DataFrame):
         ------------
         
         '''
-        pd_df_col = self.__getitem__(self.column)
+        column = column if column else self.column
+        pd_df_col = self.__getitem__(column)
         
         #Concatenate all the sentences. Defaults a '.' when going from one row to another.
         all_messages = pd_df_col.str.cat(sep='. ')
@@ -140,7 +143,7 @@ class NLPFrame(pd.DataFrame):
 
 
 
-    def get_part_of_speech(self, show_only=['adjective', 'noun', 'verb']):
+    def get_part_of_speech(self, show_only=['adjective', 'noun', 'verb'], column=''):
         '''
         This function generates statistics about the proportions of following
         parts of speech in the given column::
@@ -175,7 +178,8 @@ class NLPFrame(pd.DataFrame):
 #         if type(pd_df_col) != pd.core.series.Series:
 #             raise TypeError('pd_df_col should be column of a dataframe, i.e. pd.core.series.Series type')
 # 
-        pd_df_col = self.__getitem__(self.column)
+        column = column if column else self.column
+        pd_df_col = self.__getitem__(column)
 
         # Defining mapping of abbreviation to the actual part of speech name.
         lookup_dict = {'ADJ': 'adjective',
@@ -217,7 +221,7 @@ class NLPFrame(pd.DataFrame):
         counts = {lookup_dict[k]: round(v/len(tags), 4) for k, v in counts.items()}
         return pd.DataFrame(counts, index=[0])
 
-    def detect_language(self):
+    def detect_language(self, column = ''):
         '''
         This function will search through the Pandas DataFrame column of
         textual data to detect the language of the corpus.
@@ -239,7 +243,8 @@ class NLPFrame(pd.DataFrame):
             [1]  'English'
         ------------
         '''
-        pd_df_col = self.__getitem__(self.column)
+        column = column if column else self.column
+        pd_df_col = self.__getitem__(column)
         
         pretrained_model_path = 'model/lid.176.bin'
         model = fasttext.load_model(pretrained_model_path)
@@ -248,7 +253,7 @@ class NLPFrame(pd.DataFrame):
         language = languages.get(alpha_2 = result)
         return pd.DataFrame({'language': [language.name]})
 
-    def polarity(self):
+    def polarity(self, column=''):
         """
         This method will check and compute the polarity
         of the text data. This method will return:
@@ -276,7 +281,9 @@ class NLPFrame(pd.DataFrame):
 
         """
         
-        df_col = self.__getitem__(self.column)
+        
+        column = column if column else self.column
+        df_col = self.__getitem__(column)
         
         try:
             # loading positive lexicons
