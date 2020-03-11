@@ -64,6 +64,11 @@ df.polarity()
 df.summary_4()
 [4] | number of sentences | number of stop words   |        high freq. words                |
     |         1           |           179          |    [(2, I), (1, travelling), (1, to)]  |
+    
+df.get_nlp_summary()
+[5]   language | Number of sentences | Stop words  |                         Frequency   | adjective  | noun  |  verb  |  positive_words | negative_words |
+  English      |              1      |       179   | [(2, I), (1, travelling), (1, to)]  |    0.125   | 0.125 | 0.3125 |            1    |             0  |
+
 ```
 
 ### Credits
