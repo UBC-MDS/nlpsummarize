@@ -45,24 +45,25 @@ This is a basic example which shows you how to generate a summary:
 
 ``` python
 
-import nlpsummarizer
-df = pd.DataFrame({'text_col' : ['I love travelling to Japan and
+from nlpsummarizer import nlp
+df = nlp.NLPFrame({'text_col' : ['I love travelling to Japan and
                                 eating Mexican food but I can only speak
                                 English!']})
-detect_language(df['text_col'])
-[1]  'English'
+df.detect_language()
+[1]   | language |
+      |  English |
 
-get_part_of_speech(df['text_col'])
-[2]  |   verbs    | prepositions | adjectives |   nouns   |  articles  |
-     |    0.2     |     0.11     |     0.3    |    0.06   |     0.18   |
+df.get_part_of_speech()
+[2]  |  adjective  |  noun   |  verb   |
+     |  0.125      |  0.125  |  0.3125 |
 
-get_polarity(df['text_col'])
-[3] | positive words | negative words | neutral words |
-    |         3      |           0    |    15         |
+df.polarity()
+[3] | positive words | negative words |
+    |         1      |           0    |
 
-summary_4(df['text_col'])
-[4] | number of sentences | number of stop words | high freq. words |
-    |         1           |           4          |    I(2)          |
+df.summary_4()
+[4] | number of sentences | number of stop words   |        high freq. words                |
+    |         1           |           179          |    [(2, I), (1, travelling), (1, to)]  |
 ```
 
 ### Credits
