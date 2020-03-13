@@ -14,13 +14,40 @@ import wget
 import os
 
 class NLPFrame(pd.DataFrame):
-    def __init__(self, data, column = None, *args, **kwargs):
+    """
+    This class implements the extension of pandas DataFrame to give summary of a column
+    containing text.
+    """
+    def __init__(self, data = None, column = None, *args, **kwargs):
+        """
+        Initializing NLPFrame.
+
+        Parameters
+        ----------
+        data: ndarray (structured or homogeneous), Iterable, dict, or DataFrame
+            Dict can contain Series, arrays, constants, or list-like objects.
+
+        column: string or None
+            The column name that will be used as default when doing summary. If None,
+            the column is seleted automatically.
+
+        *args:
+            Other arguments that are passed to pd.DataFrame during initialization
+
+        **kwargs:
+            keyword arguments to pass pd.DataFrame during initialization
+        """
         super(NLPFrame, self).__init__(data, *args, **kwargs)
 
         # For now, we support only one column
         self.column = column if column else self.select_dtypes(include='object').columns[0]
 
     def check_nltk_dependencies(self):
+        """
+        Checks the dependencies to use nltk package.
+
+        If the necessary model is not present in the system, it is downloaded.
+        """
         try:
             # Check if punkt has been downloaded or not, if not do so 
             try:
@@ -49,6 +76,12 @@ class NLPFrame(pd.DataFrame):
         return True
 
     def fasttext_dependencies(self):
+        """
+        Checks the dependencies to use fasttext package.
+
+        If the necessary model is not present in the system, it is downloaded.
+        """
+
         path = './model/lid.176.bin'
         if not os.path.isfile(path): 
             try:
@@ -62,18 +95,48 @@ class NLPFrame(pd.DataFrame):
         return True
 
     def get_nlp_summary(self, column = ''):
+        """
+        Generates full summary of the column specified or one that was picked automatically.
 
+        -------------
+        Parameters
+            column(string):
+                If specified, it will be used when generating summary. If it is an empty string,
+                the default one will be used
+
+        ------------
+        Return
+            nlp.NLPFrame: contains full summary of the column.
+
+        -----------
+        Example
+
+        >>> ex = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday\
+                                             and I would love getting a \
+                                             coffee. However, startbucks\
+                                             is closed.']})
+
+        [0]    language  Number of sentences  Stop words                      Frequency  adjective    noun    verb  positive_words  negative_words
+            0  English                    2         179  [(2, is), (2, a), (1, would)]     0.0526  0.2105  0.3158               2               0
+
+        """
         column = column if column else self.column
 
         if not self.check_nltk_dependencies() or not self.fasttext_dependencies():
             print('Dependencies are not met. Please read the instructions or contact the developers for further details')
             return None
 
-        return pd.concat((
-            self.detect_language(column=column),
-            self.summary_4(column=column),
-            self.get_part_of_speech(column=column),
-            self.polarity(column=column)), axis=1)
+        try:
+            res = pd.concat((
+                self.detect_language(column=column),
+                self.summary_4(column=column),
+                self.get_part_of_speech(column=column),
+                self.polarity(column=column)), axis=1)
+        except ValueError:
+            print(f"The column {column} doesn't exist")
+            res = NLPFrame()
+
+        return res
 
     def summary_4(self, nof=3, column = ''):
         '''
@@ -85,8 +148,10 @@ class NLPFrame(pd.DataFrame):
         when a column of a pandas dataframe is passed in.  
         ------------
         Argument
-            pd_df_col (array): pandas dataframe with a columns having characters
-        
+            nof (int): number of Top nof to extract.
+            column (string): Column to generate summary from. If empty string, 
+                the default is taken.
+            
         ------------
         Return
             dataframe  with the following elements:
@@ -97,12 +162,12 @@ class NLPFrame(pd.DataFrame):
         
         ------------
         Example
-            >>> ex = pd.DataFrame({'text_col' : ['Today is a beautiful Monday
+            >>> ex = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday
                                              and I would love getting a 
                                              coffee. However, startbucks 
                                              is closed.']})
             
-            >>> sentence_stopwords_freq_detection(ex['text_col'])
+            >>> ex.sentence_stopwords_freq_detection()
             
             [1]  | number of sentences | number of stop words | high freq. words |
                  |         2           |           6          |    is(2), a(2)   |    
@@ -110,7 +175,11 @@ class NLPFrame(pd.DataFrame):
         
         '''
         column = column if column else self.column
-        pd_df_col = self.__getitem__(column)
+        
+        try:
+            pd_df_col = self.__getitem__(column)
+        except KeyError:
+            raise ValueError(f"The column {column} doesn't exist in the NLPFrame")
         
         #Concatenate all the sentences. Defaults a '.' when going from one row to another.
         all_messages = pd_df_col.str.cat(sep='. ')
@@ -154,22 +223,23 @@ class NLPFrame(pd.DataFrame):
             - articles
         ------------
         Argument
-            pd_df_col (pd.Series): column of pandas dataframe (i.e. Series)
-                            containing text data.
             show_only (list-like): names of the part of speech of put into the final result.
                 If False or None, all part of speech will be shown (i.e. ['adjective', 'adposition',
                 'adverb', 'conjuction', 'article', 'noun', 'numeral', 'particle', 'pronoun', 'verb',
                 'punctuation']). Default: ['adjective', 'noun', 'verb'].
+            column(string):
+                If specified, it will be used when generating summary. If it is an empty string,
+                the default one will be used
         ------------
         Return
             pd.DataFrame with columns verbs, prepositions, adjectives, nouns, articles
         ------------
         Example
-            >>> ex = pd.DataFrame({'text_col' : ['Today is a beautiful Monday
+            >>> ex = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday
                                              and I would love getting a 
                                              coffee. However, startbucks 
                                              is closed.']})
-            >>> get_part_of_speech(ex['text_col'])
+            >>> ex.get_part_of_speech()
             [1]  |   verbs    | prepositions | adjectives |   nouns   |  articles  |
                  |    0.2     |     0.11     |     0.3    |    0.06   |     0.18   |
         ------------
@@ -179,7 +249,10 @@ class NLPFrame(pd.DataFrame):
 #             raise TypeError('pd_df_col should be column of a dataframe, i.e. pd.core.series.Series type')
 # 
         column = column if column else self.column
-        pd_df_col = self.__getitem__(column)
+        try:
+            pd_df_col = self.__getitem__(column)
+        except KeyError:
+            raise ValueError(f"The column {column} doesn't exist in the NLPFrame")
 
         # Defining mapping of abbreviation to the actual part of speech name.
         lookup_dict = {'ADJ': 'adjective',
@@ -228,23 +301,32 @@ class NLPFrame(pd.DataFrame):
 
         ------------
         Argument
-            pd_df_col (pd.Series): column of Pandas Dataframe (i.e. Series)
-                            containing text data.
+            column(string):
+                If specified, it will be used when generating summary. If it is an empty string,
+                the default one will be used
         ------------
         Return
-            string: type of language
+            pd.DataFrame: contains one column having information about the language
         ------------
         Example
-            >>> df = pd.DataFrame({'text_col' : ['I love travelling to Japan and
+            >>> df = nlp.NLPFrame({'text_col' : ['I love travelling to Japan and
                                     eating Mexican food but I can only speak
                                     English!']})
 
-            >>> detect_language(df['text_col'])
-            [1]  'English'
+            >>> df.detect_language()
+            
+
+            [1]   language
+               0  English
+
         ------------
         '''
         column = column if column else self.column
-        pd_df_col = self.__getitem__(column)
+        try:
+            pd_df_col = self.__getitem__(column)
+        except KeyError:
+            raise ValueError(f"The column {column} doesn't exist in the NLPFrame")
+        
         
         pretrained_model_path = 'model/lid.176.bin'
         model = fasttext.load_model(pretrained_model_path)
@@ -262,7 +344,9 @@ class NLPFrame(pd.DataFrame):
                 
         -----------
         Arguments:
-        df_col (pd.DataFrame) : a column of pandas dataframe having textual data within it
+            column(string):
+                If specified, it will be used when generating summary. If it is an empty string,
+                the default one will be used
         
         -----------
         Return:
@@ -271,10 +355,10 @@ class NLPFrame(pd.DataFrame):
         
         -----------
         Example:
-        >>>> df = pd.DataFrame({'text': ['He is a good guy.
+        >>>> df = nlp.NLPFrame({'text': ['He is a good guy.
                                         This is the worst coffee I had in my life.']})
                                         
-        >>>> polarity(df['text'])
+        >>>> df.polarity(df['text'])
          [1]  | positive words | negative words |
               |         1      |           1    |
         ------------
@@ -283,7 +367,11 @@ class NLPFrame(pd.DataFrame):
         
         
         column = column if column else self.column
-        df_col = self.__getitem__(column)
+        try:
+            pd_col = self.__getitem__(column)
+        except KeyError:
+            raise ValueError(f"The column {column} doesn't exist in the NLPFrame")
+        
         
         try:
             # loading positive lexicons
@@ -328,15 +416,15 @@ class NLPFrame(pd.DataFrame):
         return pd.DataFrame({'positive_words':positive_word_count, 'negative_words':negative_word_count}, index = [0])
     
 
-def read_csv(csv_path = ''):
+def read_csv(csv_path = '', *args, **kwargs):
     if csv_path == '':
         raise ValueError('Please provide path to the csv file')
-    return NLPFrame(pd.read_csv(csv_path))
+    return NLPFrame(pd.read_csv(csv_path, *args, **kwargs))
 
-def read_excel(path = ''):
+def read_excel(path = '', *args, **kwargs):
     if path == '':
         raise ValueError('Please provide path to the excel file')
-    return NLPFrame(pd.read_csv(read_excel))
+    return NLPFrame(pd.read_csv(read_excel, *args, **kwargs))
 
 if __name__ == '__main__':
     # ex = pd.DataFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']})
