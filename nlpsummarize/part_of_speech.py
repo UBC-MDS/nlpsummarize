@@ -36,6 +36,12 @@ def get_part_of_speech(pd_df_col, show_only=['adjective', 'noun', 'verb']):
              |    0.2     |     0.11     |     0.3    |    0.06   |     0.18   |
     ------------
     '''
+    # Adding initial check of the input
+    if type(pd_df_col) != pd.core.series.Series:
+        raise TypeError('pd_df_col should be column of a dataframe, i.e. pd.core.series.Series type')
+
+
+    # Defining mapping of abbreviation to the actual part of speech name.
     lookup_dict = {'ADJ': 'adjective',
                    'ADP': 'adposition',
                    'ADV': 'adverb',
@@ -48,8 +54,12 @@ def get_part_of_speech(pd_df_col, show_only=['adjective', 'noun', 'verb']):
                    'VERB': 'verb',
                    '.': 'punctuation'}
 
-    if show_only:
-        lookup_dict = {k: v for k, v in lookup_dict.items() if v in show_only}
+    # Selecting subset of the part of speech that is interesting to the user
+    try:
+        if show_only:
+            lookup_dict = {k: v for k, v in lookup_dict.items() if v in show_only}
+    except TypeError:
+        raise TypeError('show_only should be iterable object containing values from part of speech')
 
     try:
         concatenated_text = '\n'.join(pd_df_col)
@@ -62,7 +72,7 @@ def get_part_of_speech(pd_df_col, show_only=['adjective', 'noun', 'verb']):
                 >>> nltk.download('universal_tagset')")
         return None
 
-
+    # Counting part of speech and getting proportions
     counts = {k: 0 for k in lookup_dict.keys()}
     for word in tags:
         if word[1] in counts:
