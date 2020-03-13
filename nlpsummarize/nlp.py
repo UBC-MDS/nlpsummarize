@@ -417,11 +417,45 @@ class NLPFrame(pd.DataFrame):
     
 
 def read_csv(csv_path = '', *args, **kwargs):
+    """
+    Read a comma-separated values (csv) file into NLPFrame.
+
+    --------------
+    Arguments:
+        csv_path: str or path object
+        *args: arguments to pass pd.read_csv function
+        **kwargs: keyword arguments to pass pd.read_csv function
+
+    --------------
+    Return
+        NLPFrame
+
+    -------------
+    Example
+        >>> nlp.read_csv('./data/file.csv')
+    """
     if csv_path == '':
         raise ValueError('Please provide path to the csv file')
     return NLPFrame(pd.read_csv(csv_path, *args, **kwargs))
 
 def read_excel(path = '', *args, **kwargs):
+    """
+    Read an Excel file into a NLPFrame.
+
+    --------------
+    Arguments:
+        path: str or path object
+        *args: arguments to pass pd.read_excel function
+        **kwargs: keyword arguments to pass pd.read_excel function
+
+    --------------
+    Return
+        NLPFrame
+
+    -------------
+    Example
+        >>> nlp.read_excel('./data/file.xlsx')
+    """
     if path == '':
         raise ValueError('Please provide path to the excel file')
     return NLPFrame(pd.read_csv(read_excel, *args, **kwargs))
