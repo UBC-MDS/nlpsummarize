@@ -26,6 +26,7 @@ jobs:
         python -m nltk.downloader averaged_perceptron_tagger
         python -m nltk.downloader universal_tagset
         pip install pandas
+        pip install xlrd
         pip install fasttext
         pip install pycountry
         pip install wget
