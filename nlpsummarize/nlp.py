@@ -82,7 +82,7 @@ class NLPFrame(pd.DataFrame):
         If the necessary model is not present in the system, it is downloaded.
         """
 
-        path = './model/lid.176.bin'
+        path = 'model/lid.176.bin'
         if not os.path.isfile(path): 
             try:
                 print('Downloading fasttext pre-trained model')
@@ -376,6 +376,7 @@ class NLPFrame(pd.DataFrame):
         try:
             # loading positive lexicons
             positive_words = list(pd.read_csv('data/positive-words.txt',skiprows=34, header = 'infer')['words'])
+
             
             # loading negative lexicons
             negative_words = list(pd.read_csv('data/negative-words.txt',skiprows=34, header='infer')['words'])
@@ -387,7 +388,7 @@ class NLPFrame(pd.DataFrame):
         try:
         
             # concat messages for easy processing
-            all_messages = df_col.str.cat(sep=', ')
+            all_messages = pd_col.str.cat(sep=', ')
             
         except:
             print('Concat failed, please provide valid column of textual data')
@@ -464,6 +465,8 @@ if __name__ == '__main__':
     # ex = pd.DataFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']})
     # print(get_part_of_speech(ex['text_col']))
         
-    ex2 = NLPFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']})
+    #ex2 = NLPFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']})
+    #ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!']})
+    ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!', 'Hola como estas']})
     print(ex2.get_nlp_summary())
 
