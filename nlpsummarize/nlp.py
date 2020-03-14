@@ -233,16 +233,11 @@ class NLPFrame(pd.DataFrame):
         if show_only:
             lookup_dict = {k: v for k, v in lookup_dict.items() if v in show_only}
 
-        try:
-            concatenated_text = '\n'.join(pd_df_col)
-            concatenated_text = nltk.word_tokenize(concatenated_text)
-            tags = nltk.pos_tag(concatenated_text, tagset='universal')
-        except LookupError as e:
-            print("If you haven't done so, please before running get_part_of_speech\
-                    function please run:\n\n>>> nltk.download('punkt')\
-                    \n>>> nltk.download('averaged_perceptron_tagger')\n\
-                    >>> nltk.download('universal_tagset')")
-            return None
+     
+        concatenated_text = '\n'.join(pd_df_col)
+        concatenated_text = nltk.word_tokenize(concatenated_text)
+        tags = nltk.pos_tag(concatenated_text, tagset='universal')
+       
 
         # Counting part of speech and getting proportions
         counts = {k: 0 for k in lookup_dict.keys()}
@@ -286,14 +281,11 @@ class NLPFrame(pd.DataFrame):
 
         path = 'model/lid.176.bin'
         if not os.path.isfile(path):
-            try:
-                print('Downloading fasttext pre-trained model')
-                
-                url = 'https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin'
-                wget.download(url, path)
-            except:
-                print('Something went wrong when downloading!!')
-                return False      
+            
+            print('Downloading fasttext pre-trained model')
+            url = 'https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin'
+            wget.download(url, path)
+            
 
         pretrained_model_path = 'model/lid.176.bin'
         model = fasttext.load_model(pretrained_model_path)
@@ -407,14 +399,4 @@ def read_excel(path = '', *args, **kwargs):
     """
 
     return NLPFrame(pd.read_excel(path, *args, **kwargs))
-
-if __name__ == '__main__':
-    # ex = pd.DataFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']})
-    # print(get_part_of_speech(ex['text_col']))
-        
-    #ex2 = NLPFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']})
-    #ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!']})
-    #ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!', 'Hola como estas']})
-    ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!', 'Hola como estas']})
-    print(ex2.get_nlp_summary())
 
