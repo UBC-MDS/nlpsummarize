@@ -20,6 +20,7 @@ jobs:
         POETRY_VIRTUALENVS_CREATE: false
       run: |
         pip install nltk
+        python -m nltk.downloader all
         pip install pandas
         pip install fasttext
         pip install pycountry
