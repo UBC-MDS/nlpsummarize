@@ -381,35 +381,20 @@ class NLPFrame(pd.DataFrame):
             raise ValueError(f"The column {column} doesn't exist in the NLPFrame")
         
         
-        try:
-            # loading positive lexicons
-            positive_words = list(pd.read_csv('data/positive-words.txt',skiprows=34, header = 'infer')['words'])
+        # loading positive lexicons
+        positive_words = list(pd.read_csv('data/positive-words.txt',skiprows=34, header = 'infer')['words'])
 
+        
+        # loading negative lexicons
+        negative_words = list(pd.read_csv('data/negative-words.txt',skiprows=34, header='infer')['words'])
+    
+
+        # concat messages for easy processing
+        all_messages = pd_col.str.cat(sep=', ')
+    
+        # sensing tokens
+        word_tokens = re.findall(r'\b\w[\w-]*\b', all_messages.lower())
             
-            # loading negative lexicons
-            negative_words = list(pd.read_csv('data/negative-words.txt',skiprows=34, header='infer')['words'])
-        
-        except:
-            print('Error reading Lexicons. Please check if lexicon files are in data directory...')
-        
-        
-        try:
-        
-            # concat messages for easy processing
-            all_messages = pd_col.str.cat(sep=', ')
-            
-        except:
-            print('Concat failed, please provide valid column of textual data')
-        
-        
-        try:
-        
-            # sensing tokens
-            word_tokens = re.findall(r'\b\w[\w-]*\b', all_messages.lower())
-            
-        except:
-            print('Tokenization failed, please provide a valid column of textual data')
-        
         # counting positive words
         positive_word_count = 0
         for word in word_tokens:
@@ -443,8 +428,7 @@ def read_csv(csv_path = '', skiprows=34, header = 'infer', *args, **kwargs):
     Example
         >>> nlp.read_csv('./data/file.csv')
     """
-    if csv_path == '':
-        raise ValueError('Please provide path to the csv file')
+ 
     return NLPFrame(pd.read_csv(csv_path,skiprows=skiprows, header = header, *args, **kwargs))
 
 def read_excel(path = '', *args, **kwargs):
@@ -465,8 +449,7 @@ def read_excel(path = '', *args, **kwargs):
     Example
         >>> nlp.read_excel('./data/file.xlsx')
     """
-    if path == '':
-        raise ValueError('Please provide path to the excel file')
+
     return NLPFrame(pd.read_excel(path, *args, **kwargs))
 
 if __name__ == '__main__':
