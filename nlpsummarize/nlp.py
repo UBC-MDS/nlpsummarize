@@ -12,6 +12,7 @@ from nltk.corpus import stopwords
 from itertools import islice
 import wget
 import os
+from nlpsummarize.dependencies import check_nltk_dependencies, fasttext_dependencies
 
 class NLPFrame(pd.DataFrame):
     """
@@ -40,59 +41,23 @@ class NLPFrame(pd.DataFrame):
         super(NLPFrame, self).__init__(data, *args, **kwargs)
 
         # For now, we support only one column
-        self.column = column if column else self.select_dtypes(include='object').columns[0]
 
-    def check_nltk_dependencies(self):
-        """
-        Checks the dependencies to use nltk package.
-
-        If the necessary model is not present in the system, it is downloaded.
-        """
-        try:
-            # Check if punkt has been downloaded or not, if not do so 
-            try:
-                nltk.data.find('tokenizers/punkt')
-            except LookupError:
-                print('Downloading punkt...')
-                nltk.download('punkt')
+        if column and column in self.columns:
+            self.column = column
+        else:
+            print('Either column parameter is not defined or it is not present in the NLPFrame.')
+            print('Trying to pick it automatically')
             
-            # Check if stopwords has been downloaded or not, if not do so 
-            try:
-                nltk.data.find('corpora/stopwords')
-            except LookupError:
-                print('Downloading stopwords...')
-                nltk.download('stopwords')
 
-            # Check if averaged perceptron tagger has been downloaded or not, if not do so 
-            try:
-                nltk.data.find('taggers/averaged_perceptron_tagger')
-            except LookupError:
-                print('Downloading averaged_perceptron_tagger...')
-                nltk.download('averaged_perceptron_tagger')
-        except:
-            print('Something went wrong when checking nltk dependencies')
-            return False
+            text_columns = self.select_dtypes(include='object').columns
 
-        return True
+            if not text_columns.empty:
+                print(f'Found columns containing at least one string: {text_columns}')
+                print(f'Picking the first one: {text_columns[0]}')
+                self.column = text_columns[0]
+            else:
+                self.column = None
 
-    def fasttext_dependencies(self):
-        """
-        Checks the dependencies to use fasttext package.
-
-        If the necessary model is not present in the system, it is downloaded.
-        """
-
-        path = 'model/lid.176.bin'
-        if not os.path.isfile(path): 
-            try:
-                print('Downloading fasttext pre-trained model')
-                  
-                url = 'https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin'
-                wget.download(url, path)
-            except:
-                print('Something went wrong when downloading!!')
-                return False
-        return True
 
     def get_nlp_summary(self, column = ''):
         """
@@ -122,9 +87,8 @@ class NLPFrame(pd.DataFrame):
         """
         column = column if column else self.column
 
-        if not self.check_nltk_dependencies() or not self.fasttext_dependencies():
-            print('Dependencies are not met. Please read the instructions or contact the developers for further details')
-            return None
+        if not column:
+            raise ValueError('There is no column with text in the NLPFrame')
 
         try:
             res = pd.concat((
@@ -134,7 +98,7 @@ class NLPFrame(pd.DataFrame):
                 self.polarity(column=column)), axis=1)
         except ValueError:
             print(f"The column {column} doesn't exist")
-            res = NLPFrame()
+            res = pd.DataFrame()
 
         return res
 
@@ -167,14 +131,20 @@ class NLPFrame(pd.DataFrame):
                                              coffee. However, startbucks 
                                              is closed.']})
             
-            >>> ex.sentence_stopwords_freq_detection()
+            >>> ex.summary_4()
             
             [1]  | number of sentences | number of stop words | high freq. words |
                  |         2           |           6          |    is(2), a(2)   |    
         ------------
         
         '''
+        if not check_nltk_dependencies():
+            print('Dependencies are not met. Please read the instructions or contact the developers for further details')
+            return None
+        
         column = column if column else self.column
+        if not column:
+            raise ValueError('There is no column with text in the NLPFrame')
         
         try:
             pd_df_col = self.__getitem__(column)
@@ -244,11 +214,14 @@ class NLPFrame(pd.DataFrame):
                  |    0.2     |     0.11     |     0.3    |    0.06   |     0.18   |
         ------------
         '''
-        # Adding initial check of the input
-#         if type(pd_df_col) != pd.core.series.Series:
-#             raise TypeError('pd_df_col should be column of a dataframe, i.e. pd.core.series.Series type')
-# 
+
+        if not check_nltk_dependencies():
+            print('Dependencies are not met. Please read the instructions or contact the developers for further details')
+            return None
+        
         column = column if column else self.column
+        if not column:
+            raise ValueError('There is no column with text in the NLPFrame')
         try:
             pd_df_col = self.__getitem__(column)
         except KeyError:
@@ -274,16 +247,16 @@ class NLPFrame(pd.DataFrame):
         except TypeError:
             raise TypeError('show_only should be iterable object containing values from part of speech')
 
-        try:
-            concatenated_text = '\n'.join(pd_df_col)
-            concatenated_text = nltk.word_tokenize(concatenated_text)
-            tags = nltk.pos_tag(concatenated_text, tagset='universal')
-        except LookupError as e:
-            print("If you haven't done so, please before running get_part_of_speech\
-                    function please run:\n\n>>> nltk.download('punkt')\
-                    \n>>> nltk.download('averaged_perceptron_tagger')\n\
-                    >>> nltk.download('universal_tagset')")
-            return None
+        # try:
+        concatenated_text = '\n'.join(pd_df_col)
+        concatenated_text = nltk.word_tokenize(concatenated_text)
+        tags = nltk.pos_tag(concatenated_text, tagset='universal')
+        # except LookupError as e:
+        #     print("If you haven't done so, please before running get_part_of_speech\
+        #             function please run:\n\n>>> nltk.download('punkt')\
+        #             \n>>> nltk.download('averaged_perceptron_tagger')\n\
+        #             >>> nltk.download('universal_tagset')")
+        #     return None
 
         # Counting part of speech and getting proportions
         counts = {k: 0 for k in lookup_dict.keys()}
@@ -321,23 +294,31 @@ class NLPFrame(pd.DataFrame):
 
         ------------
         '''
+
+        if not fasttext_dependencies():
+            print('Dependencies are not met. Please read the instructions or contact the developers for further details')
+            return None
+
+
         column = column if column else self.column
+        if not column:
+            raise ValueError('There is no column with text in the NLPFrame')
         try:
             pd_df_col = self.__getitem__(column)
         except KeyError:
             raise ValueError(f"The column {column} doesn't exist in the NLPFrame")
 
 
-        path = 'model/lid.176.bin'
-        if not os.path.isfile(path):
-            try:
-                print('Downloading fasttext pre-trained model')
-                
-                url = 'https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin'
-                wget.download(url, path)
-            except:
-                print('Something went wrong when downloading!!')
-                return False      
+        # path = 'model/lid.176.bin'
+        # if not os.path.isfile(path):
+        #     try:
+        #         print('Downloading fasttext pre-trained model')
+        #         
+        #         url = 'https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin'
+        #         wget.download(url, path)
+        #     except:
+        #         print('Something went wrong when downloading!!')
+        #         return False      
 
         pretrained_model_path = 'model/lid.176.bin'
         model = fasttext.load_model(pretrained_model_path)
@@ -369,49 +350,39 @@ class NLPFrame(pd.DataFrame):
         >>>> df = nlp.NLPFrame({'text': ['He is a good guy.
                                         This is the worst coffee I had in my life.']})
                                         
-        >>>> df.polarity(df['text'])
+        >>>> df.polarity()
          [1]  | positive words | negative words |
               |         1      |           1    |
         ------------
 
         """
         
+        if not check_nltk_dependencies():
+            print('Dependencies are not met. Please read the instructions or contact the developers for further details')
+            return None
         
         column = column if column else self.column
+        if not column:
+            raise ValueError('There is no column with text in the NLPFrame')
         try:
             pd_col = self.__getitem__(column)
         except KeyError:
             raise ValueError(f"The column {column} doesn't exist in the NLPFrame")
         
         
-        try:
-            # loading positive lexicons
-            positive_words = list(pd.read_csv('data/positive-words.txt',skiprows=34, header = 'infer')['words'])
+        # loading positive lexicons
+        positive_words = list(pd.read_csv('data/positive-words.txt',skiprows=34, header = 'infer')['words'])
 
-            
-            # loading negative lexicons
-            negative_words = list(pd.read_csv('data/negative-words.txt',skiprows=34, header='infer')['words'])
         
-        except:
-            print('Error reading Lexicons. Please check if lexicon files are in data directory...')
+        # loading negative lexicons
+        negative_words = list(pd.read_csv('data/negative-words.txt',skiprows=34, header='infer')['words'])
         
-        
-        try:
-        
-            # concat messages for easy processing
-            all_messages = pd_col.str.cat(sep=', ')
-            
-        except:
-            print('Concat failed, please provide valid column of textual data')
+        # concat messages for easy processing
+        all_messages = pd_col.str.cat(sep=', ')
         
         
-        try:
-        
-            # sensing tokens
-            word_tokens = re.findall(r'\b\w[\w-]*\b', all_messages.lower())
-            
-        except:
-            print('Tokenization failed, please provide a valid column of textual data')
+        # sensing tokens
+        word_tokens = re.findall(r'\b\w[\w-]*\b', all_messages.lower())
         
         # counting positive words
         positive_word_count = 0
@@ -446,9 +417,11 @@ def read_csv(csv_path = '', *args, **kwargs):
     Example
         >>> nlp.read_csv('./data/file.csv')
     """
-    if csv_path == '':
-        raise ValueError('Please provide path to the csv file')
-    return NLPFrame(pd.read_csv(csv_path, *args, **kwargs))
+    try:
+        res = NLPFrame(pd.read_csv(csv_path, *args, **kwargs))
+        return res
+    except:
+        raise ValueError('Please provide path to the excel file')
 
 def read_excel(path = '', *args, **kwargs):
     """
@@ -468,16 +441,19 @@ def read_excel(path = '', *args, **kwargs):
     Example
         >>> nlp.read_excel('./data/file.xlsx')
     """
-    if path == '':
+    try:
+        res = NLPFrame(pd.read_excel(path, *args, **kwargs))
+        return res
+    except:
         raise ValueError('Please provide path to the excel file')
-    return NLPFrame(pd.read_csv(read_excel, *args, **kwargs))
+    
 
-if __name__ == '__main__':
-    # ex = pd.DataFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']})
-    # print(get_part_of_speech(ex['text_col']))
-        
-    #ex2 = NLPFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']})
-    #ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!']})
-    ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!', 'Hola como estas']})
-    print(ex2.get_nlp_summary())
-
+# if __name__ == '__main__':
+#     # ex = pd.DataFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']})
+#     # print(get_part_of_speech(ex['text_col']))
+#         
+#     #ex2 = NLPFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']})
+#     #ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!']})
+#     ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!', 'Hola como estas']})
+#     print(ex2.get_nlp_summary())
+# 

@@ -3,6 +3,52 @@ from nlpsummarize import nlp
 
 import pandas as pd
 
+def test_init_1():
+    """
+    Test initialization of the class NLPFrame
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1])
+
+    assert initial_df.column == 'text_col'
+
+
+def test_init_2():
+    """
+    Test initialization of the class NLPFrame
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1], column = 'non_existing')
+    assert initial_df.column == 'text_col'
+
+def test_init_3():
+    """
+    Test initialization of the class NLPFrame that doesn't have text column
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : [5,6,8]})
+    assert initial_df.column == None
+
+def test_get_nlp_summary_1():
+    """
+    Tests get_nlp_summary function for NLPFrame without column with text
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : [5,6,8]})
+    try:
+        initial_df.get_nlp_summary()
+        assert False
+    except ValueError:
+        pass
+    
+def test_get_nlp_summary_2():
+    """
+    Tests get_nlp_summary function for NLPFrame with wrong column specified
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1], column = 'non_existing')
+    res = initial_df.get_nlp_summary(column = 'non_existing')
+    assert res.equals(pd.DataFrame())
 
 def test_pos_english_input():
     """
@@ -52,6 +98,53 @@ def test_invalid_pos_input_1():
     except TypeError:
         pass
 
+def test_pos_output_columns():
+    """
+    Test function to ensure that the `get_part_of_speech` function outputs the POS that are given as input
+    """
+
+    initial_df = nlp.NLPFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']}, index = [0,1])
+    res = initial_df.get_part_of_speech(show_only=False)
+    a = len(res.columns)
+
+    assert a>0, 'The function should return an output even for mixture of English and non-English sentences!'
+
+def test_pos_output_columns_2():
+    """
+    Test function to ensure that the `get_part_of_speech` function error handling
+    """
+
+    initial_df = nlp.NLPFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']}, index = [0,1])
+    try:
+        res = initial_df.get_part_of_speech(show_only=5)
+        assert False, 'The function should throw an error when show_only argument is not valid'
+    except TypeError:
+        pass
+
+def test_pos_output_columns_3():
+    """
+    Test function to ensure that the `get_part_of_speech` function error handling
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : [5,6,8]})
+    try:
+        initial_df.get_part_of_speech()
+        assert False
+    except ValueError:
+        pass
+
+def test_pos_invalid_input_4():
+    """
+    Tests get_pos function for NLPFrame with wrong column specified
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1], column = 'non_existing')
+    try:
+        initial_df.get_part_of_speech(column = 'non_existing')
+        assert False
+    except ValueError:
+        pass
+
 def test_polarity_input():
     """
     Test function to ensure that the `polarity` function properly classifies between "good" and "bad" text.
@@ -71,6 +164,30 @@ def test_polarity_count():
     res = initial_df.polarity()
 
     assert ((res.iloc[0,0] >= 0) & (res.iloc[0,1] >= 0)) , 'Count should be positive'
+
+def test_polarity_1():
+    """
+    Tests polarity function for NLPFrame without column with text
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : [5,6,8]})
+    try:
+        initial_df.polarity()
+        assert False
+    except ValueError:
+        pass
+    
+def test_polarity_2():
+    """
+    Tests polarity function for NLPFrame with wrong column specified
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1], column = 'non_existing')
+    try:
+        res = initial_df.polarity(column = 'non_existing')
+        assert False
+    except ValueError:
+        pass
 
 def test_df_summary_4():
     """
@@ -92,6 +209,29 @@ def test_positive_summary_4():
 
     assert ((res.iloc[0,0] >= 0) & (res.iloc[0,1] >= 0)) , 'Count should be positive'
 
+def test_summary4_1():
+    """
+    Tests summary_4 function for NLPFrame without column with text
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : [5,6,8]})
+    try:
+        initial_df.summary_4()
+        assert False
+    except ValueError:
+        pass
+    
+def test_summary4_2():
+    """
+    Tests summary_4 function for NLPFrame with wrong column specified
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1], column = 'non_existing')
+    try:
+        res = initial_df.summary_4(column = 'non_existing')
+        assert False
+    except ValueError:
+        pass
 
 def test_language_works():
     """
@@ -105,3 +245,69 @@ def test_language_works():
     assert test_df.detect_language(column = 'english_text' )['language'][0] == 'English', 'Incorrect Language'
     assert test_df.detect_language(column = 'mandarin_text')['language'][0] == 'Chinese', 'Incorrect Language'
     assert test_df.detect_language(column = 'spanish_text' )['language'][0] == 'Spanish', 'Incorrect Language'
+
+
+def test_language_1():
+    """
+    Tests detect_language function for NLPFrame without column with text
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : [5,6,8]})
+    try:
+        initial_df.detect_language()
+        assert False
+    except ValueError:
+        pass
+
+def test_language_2():
+    """
+    Tests detect_language function for NLPFrame with wrong column specified
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1], column = 'non_existing')
+    try:
+        initial_df.detect_language(column = 'non_existing')
+        assert False
+    except ValueError:
+        pass
+
+def test_read_csv_1():
+    """
+    Testing read_csv file
+    """
+
+    res = nlp.read_csv('./data/sample_csv.csv')
+
+    assert type(res) == nlp.NLPFrame
+
+def test_read_csv_2():
+    """
+    Testing invalid input
+    """
+
+    try:
+        nlp.read_csv('non_existing.file')
+        assert False
+    except ValueError:
+        pass
+
+def test_read_excel_1():
+    """
+    Testing read_excel file
+    """
+
+    res = nlp.read_excel('./data/text_data.xlsx')
+
+    assert type(res) == nlp.NLPFrame
+
+
+def test_read_excel_2():
+    """
+    Testing invalid input
+    """
+
+    try:
+        nlp.read_csv('non_existing.file')
+        assert False
+    except ValueError:
+        pass
