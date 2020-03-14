@@ -1,4 +1,5 @@
 ![build](https://github.com/UBC-MDS/nlpsummarize/workflows/build/badge.svg?branch=sentence_detect)
+![Release](https://github.com/UBC-MDS/nlpsummarize/workflows/Release/badge.svg)
 
 ## nlpsummarize
 
