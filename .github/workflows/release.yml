@@ -80,8 +80,8 @@ jobs:
         prerelease: false
     - name: Build and publish
       env:
-        TEST_PYPI_USERNAME: ${{ secrets.test_pypi_username }}
-        TEST_PYPI_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
+        TEST_PYPI_USERNAME: ${{ secrets.username }}
+        TEST_PYPI_PASSWORD: ${{ secrets.password }}
       run: |
   
         poetry config repositories.nlpsummarize https://test.pypi.org/legacy/
