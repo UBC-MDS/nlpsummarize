@@ -121,6 +121,30 @@ def test_pos_output_columns_2():
     except TypeError:
         pass
 
+def test_pos_output_columns_3():
+    """
+    Test function to ensure that the `get_part_of_speech` function error handling
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : [5,6,8]})
+    try:
+        initial_df.get_part_of_speech()
+        assert False
+    except ValueError:
+        pass
+
+def test_pos_invalid_input_4():
+    """
+    Tests get_pos function for NLPFrame with wrong column specified
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1], column = 'non_existing')
+    try:
+        initial_df.get_part_of_speech(column = 'non_existing')
+        assert False
+    except ValueError:
+        pass
+
 def test_polarity_input():
     """
     Test function to ensure that the `polarity` function properly classifies between "good" and "bad" text.
@@ -243,6 +267,47 @@ def test_language_2():
     initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1], column = 'non_existing')
     try:
         initial_df.detect_language(column = 'non_existing')
+        assert False
+    except ValueError:
+        pass
+
+def test_read_csv_1():
+    """
+    Testing read_csv file
+    """
+
+    res = nlp.read_csv('./data/sample_csv.csv')
+
+    assert type(res) == nlp.NLPFrame
+
+def test_read_csv_2():
+    """
+    Testing invalid input
+    """
+
+    try:
+        nlp.read_csv('non_existing.file')
+        assert False
+    except ValueError:
+        pass
+
+def test_read_excel_1():
+    """
+    Testing read_excel file
+    """
+
+    res = nlp.read_excel('./data/text_data.xlsx')
+
+    assert type(res) == nlp.NLPFrame
+
+
+def test_read_excel_2():
+    """
+    Testing invalid input
+    """
+
+    try:
+        nlp.read_csv('non_existing.file')
         assert False
     except ValueError:
         pass

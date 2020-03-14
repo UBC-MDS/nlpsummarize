@@ -214,12 +214,7 @@ class NLPFrame(pd.DataFrame):
                  |    0.2     |     0.11     |     0.3    |    0.06   |     0.18   |
         ------------
         '''
-        # Adding initial check of the input
-#         if type(pd_df_col) != pd.core.series.Series:
-#             raise TypeError('pd_df_col should be column of a dataframe, i.e. pd.core.series.Series type')
-# 
 
-        
         if not check_nltk_dependencies():
             print('Dependencies are not met. Please read the instructions or contact the developers for further details')
             return None
@@ -314,16 +309,16 @@ class NLPFrame(pd.DataFrame):
             raise ValueError(f"The column {column} doesn't exist in the NLPFrame")
 
 
-        path = 'model/lid.176.bin'
-        if not os.path.isfile(path):
-            try:
-                print('Downloading fasttext pre-trained model')
-                
-                url = 'https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin'
-                wget.download(url, path)
-            except:
-                print('Something went wrong when downloading!!')
-                return False      
+        # path = 'model/lid.176.bin'
+        # if not os.path.isfile(path):
+        #     try:
+        #         print('Downloading fasttext pre-trained model')
+        #         
+        #         url = 'https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin'
+        #         wget.download(url, path)
+        #     except:
+        #         print('Something went wrong when downloading!!')
+        #         return False      
 
         pretrained_model_path = 'model/lid.176.bin'
         model = fasttext.load_model(pretrained_model_path)
@@ -422,9 +417,11 @@ def read_csv(csv_path = '', *args, **kwargs):
     Example
         >>> nlp.read_csv('./data/file.csv')
     """
-    if csv_path == '':
-        raise ValueError('Please provide path to the csv file')
-    return NLPFrame(pd.read_csv(csv_path, *args, **kwargs))
+    try:
+        res = NLPFrame(pd.read_csv(csv_path, *args, **kwargs))
+        return res
+    except:
+        raise ValueError('Please provide path to the excel file')
 
 def read_excel(path = '', *args, **kwargs):
     """
@@ -444,16 +441,19 @@ def read_excel(path = '', *args, **kwargs):
     Example
         >>> nlp.read_excel('./data/file.xlsx')
     """
-    if path == '':
+    try:
+        res = NLPFrame(pd.read_excel(path, *args, **kwargs))
+        return res
+    except:
         raise ValueError('Please provide path to the excel file')
-    return NLPFrame(pd.read_csv(read_excel, *args, **kwargs))
+    
 
-if __name__ == '__main__':
-    # ex = pd.DataFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']})
-    # print(get_part_of_speech(ex['text_col']))
-        
-    #ex2 = NLPFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']})
-    #ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!']})
-    ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!', 'Hola como estas']})
-    print(ex2.get_nlp_summary())
-
+# if __name__ == '__main__':
+#     # ex = pd.DataFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']})
+#     # print(get_part_of_speech(ex['text_col']))
+#         
+#     #ex2 = NLPFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']})
+#     #ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!']})
+#     ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!', 'Hola como estas']})
+#     print(ex2.get_nlp_summary())
+# 
