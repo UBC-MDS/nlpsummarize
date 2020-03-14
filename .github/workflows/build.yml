@@ -19,6 +19,7 @@ jobs:
       env:
         POETRY_VIRTUALENVS_CREATE: false
       run: |
+        pip install nltk
         pip install pytest
         pip install poetry
         pip install pytest-cov
