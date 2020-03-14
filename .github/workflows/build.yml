@@ -23,6 +23,7 @@ jobs:
         pip install pandas
         pip install fasttext
         pip install pycountry
+        pip install wget
         pip install pytest
         pip install poetry
         pip install pytest-cov
