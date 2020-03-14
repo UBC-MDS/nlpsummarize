@@ -48,30 +48,10 @@ class NLPFrame(pd.DataFrame):
 
         If the necessary model is not present in the system, it is downloaded.
         """
-        try:
-            # Check if punkt has been downloaded or not, if not do so 
-            try:
-                nltk.data.find('tokenizers/punkt')
-            except LookupError:
-                print('Downloading punkt...')
-                nltk.download('punkt')
-            
-            # Check if stopwords has been downloaded or not, if not do so 
-            try:
-                nltk.data.find('corpora/stopwords')
-            except LookupError:
-                print('Downloading stopwords...')
-                nltk.download('stopwords')
-
-            # Check if averaged perceptron tagger has been downloaded or not, if not do so 
-            try:
-                nltk.data.find('taggers/averaged_perceptron_tagger')
-            except LookupError:
-                print('Downloading averaged_perceptron_tagger...')
-                nltk.download('averaged_perceptron_tagger')
-        except:
-            print('Something went wrong when checking nltk dependencies')
-            return False
+        
+        nltk.download('punkt')
+        nltk.download('stopwords')
+        nltk.download('averaged_perceptron_tagger')
 
         return True
 
@@ -81,17 +61,11 @@ class NLPFrame(pd.DataFrame):
 
         If the necessary model is not present in the system, it is downloaded.
         """
+        
+        print('Downloading fasttext pre-trained model')
+        url = 'https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin'
+        wget.download(url, path)
 
-        path = 'model/lid.176.bin'
-        if not os.path.isfile(path):
-            try:
-                print('Downloading fasttext pre-trained model')
-                  
-                url = 'https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin'
-                wget.download(url, path)
-            except:
-                print('Something went wrong when downloading!!')
-                return False
         return True
 
     def get_nlp_summary(self, column = ''):
@@ -176,10 +150,7 @@ class NLPFrame(pd.DataFrame):
         '''
         column = column if column else self.column
         
-        try:
-            pd_df_col = self.__getitem__(column)
-        except KeyError:
-            raise ValueError(f"The column {column} doesn't exist in the NLPFrame")
+        pd_df_col = self.__getitem__(column)
         
         #Concatenate all the sentences. Defaults a '.' when going from one row to another.
         all_messages = pd_df_col.str.cat(sep='. ')
@@ -319,11 +290,8 @@ class NLPFrame(pd.DataFrame):
         ------------
         '''
         column = column if column else self.column
-        try:
-            pd_df_col = self.__getitem__(column)
-        except KeyError:
-            raise ValueError(f"The column {column} doesn't exist in the NLPFrame")
 
+        pd_df_col = self.__getitem__(column)
 
         path = 'model/lid.176.bin'
         if not os.path.isfile(path):
@@ -375,12 +343,9 @@ class NLPFrame(pd.DataFrame):
         
         
         column = column if column else self.column
-        try:
-            pd_col = self.__getitem__(column)
-        except KeyError:
-            raise ValueError(f"The column {column} doesn't exist in the NLPFrame")
         
-        
+        pd_col = self.__getitem__(column)
+
         # loading positive lexicons
         positive_words = list(pd.read_csv('data/positive-words.txt',skiprows=34, header = 'infer')['words'])
 

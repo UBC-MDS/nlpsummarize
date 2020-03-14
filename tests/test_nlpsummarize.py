@@ -120,5 +120,5 @@ def test_read_excel():
     """
     path = 'data/text_data.xlsx'
     df = nlp.read_excel(path)
-    assert isinstance(df, pd.DataFrame) == True
+    assert isinstance(df, pd.DataFrame)
 
