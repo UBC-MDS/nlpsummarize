@@ -326,8 +326,19 @@ class NLPFrame(pd.DataFrame):
             pd_df_col = self.__getitem__(column)
         except KeyError:
             raise ValueError(f"The column {column} doesn't exist in the NLPFrame")
-        
-        
+
+
+        path = 'model/lid.176.bin'
+        if not os.path.isfile(path):
+            try:
+                print('Downloading fasttext pre-trained model')
+                
+                url = 'https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin'
+                wget.download(url, path)
+            except:
+                print('Something went wrong when downloading!!')
+                return False      
+
         pretrained_model_path = 'model/lid.176.bin'
         model = fasttext.load_model(pretrained_model_path)
         predictions = model.predict(''.join(pd_df_col))
