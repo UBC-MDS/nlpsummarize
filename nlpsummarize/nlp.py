@@ -211,8 +211,9 @@ class NLPFrame(pd.DataFrame):
         '''
 
         column = column if column else self.column
-
+   
         pd_df_col = self.__getitem__(column)
+    
 
         # Defining mapping of abbreviation to the actual part of speech name.
         lookup_dict = {'ADJ': 'adjective',
@@ -228,9 +229,11 @@ class NLPFrame(pd.DataFrame):
                        '.': 'punctuation'}
 
         # Selecting subset of the part of speech that is interesting to the user
-  
-        lookup_dict = {k: v for k, v in lookup_dict.items() if v in show_only}
+    
+        if show_only:
+            lookup_dict = {k: v for k, v in lookup_dict.items() if v in show_only}
 
+     
         concatenated_text = '\n'.join(pd_df_col)
         concatenated_text = nltk.word_tokenize(concatenated_text)
         tags = nltk.pos_tag(concatenated_text, tagset='universal')
@@ -241,8 +244,6 @@ class NLPFrame(pd.DataFrame):
         for word in tags:
             if word[1] in counts:
                 counts[word[1]] += 1
-            else:
-                
 
         counts = {lookup_dict[k]: round(v/len(tags), 4) for k, v in counts.items()}
         return pd.DataFrame(counts, index=[0])
