@@ -21,10 +21,16 @@ jobs:
       env:
         POETRY_VIRTUALENVS_CREATE: false
       run: |
+        pip install nltk
+        python -m nltk.downloader all
+        pip install pandas
+        pip install fasttext
+        pip install pycountry
+        pip install wget
+        pip install pytest
         pip install poetry
-        poetry install
-    - name: Check style
-      run: poetry run flake8 --exclude=docs*
+        pip install pytest-cov
+        poetry install 
     - name: Test with pytest
       run: |
         poetry run pytest --cov=./ --cov-report=xml
