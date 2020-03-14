@@ -27,18 +27,17 @@ def detect_language(pd_df_col):
         [1]  'English'
     ------------
     '''
-    
-    path = './model/lid.176.bin'
-    if not os.path.isfile(path): 
+
+    path = 'model/lid.176.bin'
+    if not os.path.isfile(path):
         try:
             print('Downloading fasttext pre-trained model')
-                
+              
             url = 'https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin'
             wget.download(url, path)
         except:
             print('Something went wrong when downloading!!')
             return False
-    return True
 
     pretrained_model_path = 'model/lid.176.bin'
 
