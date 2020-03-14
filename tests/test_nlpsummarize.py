@@ -107,15 +107,15 @@ def test_positive_summary_4():
     assert ((res.iloc[0,0] >= 0) & (res.iloc[0,1] >= 0)) , 'Count should be positive'
 
 
-def test_language_works():
-    """
-    Test function to ensure that the `detect_language` function is properly returning correct languages.
-    """
-    test_df = nlp.NLPFrame({'english_text' : ['I am a happy person'],
-                        'mandarin_text': ['戰國策的版本存在非常多的錯誤'],
-                        'spanish_text': ['Hola mi nombre es Bill y me gustan los gatos']
-                       })
+# def test_language_works():
+#     """
+#     Test function to ensure that the `detect_language` function is properly returning correct languages.
+#     """
+#     test_df = nlp.NLPFrame({'english_text' : ['I am a happy person'],
+#                         'mandarin_text': ['戰國策的版本存在非常多的錯誤'],
+#                         'spanish_text': ['Hola mi nombre es Bill y me gustan los gatos']
+#                        })
 
-    assert test_df.detect_language(column = 'english_text' )['language'][0] == 'English', 'Incorrect Language'
-    assert test_df.detect_language(column = 'mandarin_text')['language'][0] == 'Chinese', 'Incorrect Language'
-    assert test_df.detect_language(column = 'spanish_text' )['language'][0] == 'Spanish', 'Incorrect Language'
+#     assert test_df.detect_language(column = 'english_text' )['language'][0] == 'English', 'Incorrect Language'
+#     assert test_df.detect_language(column = 'mandarin_text')['language'][0] == 'Chinese', 'Incorrect Language'
+#     assert test_df.detect_language(column = 'spanish_text' )['language'][0] == 'Spanish', 'Incorrect Language'
