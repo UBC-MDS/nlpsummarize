@@ -3,6 +3,55 @@ from nlpsummarize import nlp
 
 import pandas as pd
 
+def test_init_1():
+    """
+    Test initialization of the class NLPFrame
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1])
+
+    assert initial_df.column == 'text_col'
+
+
+def test_init_2():
+    """
+    Test initialization of the class NLPFrame
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1], column = 'non_existing')
+    assert initial_df.column == 'text_col'
+
+def test_init_3():
+    """
+    Test initialization of the class NLPFrame that doesn't have text column
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : [5,6,8]})
+    assert initial_df.column == ''
+
+def test_get_nlp_summary_1():
+    """
+    Tests get_nlp_summary function for NLPFrame without column with text
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : [5,6,8]})
+    try:
+        initial_df.get_nlp_summary()
+        assert False
+    except ValueError:
+        pass
+    
+def test_get_nlp_summary_2():
+    """
+    Tests get_nlp_summary function for NLPFrame with wrong column specified
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1], column = 'non_existing')
+    try:
+        initial_df.get_nlp_summary()
+        assert False
+    except ValueError:
+        pass
 
 def test_pos_english_input():
     """
@@ -51,6 +100,17 @@ def test_invalid_pos_input_1():
         assert False, 'The function should not be executed when the show only input is not an iterable object!!'
     except TypeError:
         pass
+
+def test_pos_output_columns():
+    """
+    Test function to ensure that the `get_part_of_speech` function outputs the POS that are given as input
+    """
+
+    initial_df = nlp.NLPFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']}, index = [0,1])
+    res = initial_df.get_part_of_speech(show_only=False)
+    a = len(res.columns)
+
+    assert a>0, 'The function should return an output even for mixture of English and non-English sentences!'
 
 def test_polarity_input():
     """

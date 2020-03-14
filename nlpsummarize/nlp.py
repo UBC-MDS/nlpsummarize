@@ -40,7 +40,22 @@ class NLPFrame(pd.DataFrame):
         super(NLPFrame, self).__init__(data, *args, **kwargs)
 
         # For now, we support only one column
-        self.column = column if column else self.select_dtypes(include='object').columns[0]
+
+        if column and column in self.columns:
+            self.column = column
+        else:
+            print('Either column parameter is not defined or it is not present in the NLPFrame.')
+            print('Trying to pick it automatically')
+            
+
+            text_columns = self.select_dtypes(include='object').columns
+
+            if text_columns:
+                print(f'Found columns containing at least one string: {text_columns}')
+                print(f'Picking the first one: {text_columns[0]}')
+                self.column = text_columns[0]
+            else:
+                self.column = None
 
     def check_nltk_dependencies(self):
         """
@@ -122,9 +137,8 @@ class NLPFrame(pd.DataFrame):
         """
         column = column if column else self.column
 
-        if not self.check_nltk_dependencies() or not self.fasttext_dependencies():
-            print('Dependencies are not met. Please read the instructions or contact the developers for further details')
-            return None
+        if not column:
+            raise ValueError('There is no column with text in the NLPFrame')
 
         try:
             res = pd.concat((
@@ -134,7 +148,7 @@ class NLPFrame(pd.DataFrame):
                 self.polarity(column=column)), axis=1)
         except ValueError:
             print(f"The column {column} doesn't exist")
-            res = NLPFrame()
+            res = pd.DataFrame()
 
         return res
 
@@ -174,7 +188,13 @@ class NLPFrame(pd.DataFrame):
         ------------
         
         '''
+        if not self.check_nltk_dependencies():
+            print('Dependencies are not met. Please read the instructions or contact the developers for further details')
+            return None
+        
         column = column if column else self.column
+        if not column:
+            raise ValueError('There is no column with text in the NLPFrame')
         
         try:
             pd_df_col = self.__getitem__(column)
@@ -248,7 +268,15 @@ class NLPFrame(pd.DataFrame):
 #         if type(pd_df_col) != pd.core.series.Series:
 #             raise TypeError('pd_df_col should be column of a dataframe, i.e. pd.core.series.Series type')
 # 
+
+        
+        if not self.check_nltk_dependencies():
+            print('Dependencies are not met. Please read the instructions or contact the developers for further details')
+            return None
+        
         column = column if column else self.column
+        if not column:
+            raise ValueError('There is no column with text in the NLPFrame')
         try:
             pd_df_col = self.__getitem__(column)
         except KeyError:
@@ -321,7 +349,15 @@ class NLPFrame(pd.DataFrame):
 
         ------------
         '''
+
+        if not self.fasttext_dependencies():
+            print('Dependencies are not met. Please read the instructions or contact the developers for further details')
+            return None
+
+
         column = column if column else self.column
+        if not column:
+            raise ValueError('There is no column with text in the NLPFrame')
         try:
             pd_df_col = self.__getitem__(column)
         except KeyError:
@@ -376,8 +412,13 @@ class NLPFrame(pd.DataFrame):
 
         """
         
+        if not self.check_nltk_dependencies():
+            print('Dependencies are not met. Please read the instructions or contact the developers for further details')
+            return None
         
         column = column if column else self.column
+        if not column:
+            raise ValueError('There is no column with text in the NLPFrame')
         try:
             pd_col = self.__getitem__(column)
         except KeyError:
