@@ -141,6 +141,30 @@ def test_polarity_count():
 
     assert ((res.iloc[0,0] >= 0) & (res.iloc[0,1] >= 0)) , 'Count should be positive'
 
+def test_polarity_1():
+    """
+    Tests polarity function for NLPFrame without column with text
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : [5,6,8]})
+    try:
+        initial_df.polarity()
+        assert False
+    except ValueError:
+        pass
+    
+def test_polarity_2():
+    """
+    Tests polarity function for NLPFrame with wrong column specified
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1], column = 'non_existing')
+    try:
+        res = initial_df.polarity(column = 'non_existing')
+        assert False
+    except ValueError:
+        pass
+
 def test_df_summary_4():
     """
     Test function to ensure that the input data is in string format.

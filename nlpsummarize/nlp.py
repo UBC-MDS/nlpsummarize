@@ -12,6 +12,7 @@ from nltk.corpus import stopwords
 from itertools import islice
 import wget
 import os
+from nlpsummarize.dependencies import check_nltk_dependencies, fasttext_dependencies
 
 class NLPFrame(pd.DataFrame):
     """
@@ -57,57 +58,6 @@ class NLPFrame(pd.DataFrame):
             else:
                 self.column = None
 
-    def check_nltk_dependencies(self):
-        """
-        Checks the dependencies to use nltk package.
-
-        If the necessary model is not present in the system, it is downloaded.
-        """
-        try:
-            # Check if punkt has been downloaded or not, if not do so 
-            try:
-                nltk.data.find('tokenizers/punkt')
-            except LookupError:
-                print('Downloading punkt...')
-                nltk.download('punkt')
-            
-            # Check if stopwords has been downloaded or not, if not do so 
-            try:
-                nltk.data.find('corpora/stopwords')
-            except LookupError:
-                print('Downloading stopwords...')
-                nltk.download('stopwords')
-
-            # Check if averaged perceptron tagger has been downloaded or not, if not do so 
-            try:
-                nltk.data.find('taggers/averaged_perceptron_tagger')
-            except LookupError:
-                print('Downloading averaged_perceptron_tagger...')
-                nltk.download('averaged_perceptron_tagger')
-        except:
-            print('Something went wrong when checking nltk dependencies')
-            return False
-
-        return True
-
-    def fasttext_dependencies(self):
-        """
-        Checks the dependencies to use fasttext package.
-
-        If the necessary model is not present in the system, it is downloaded.
-        """
-
-        path = 'model/lid.176.bin'
-        if not os.path.isfile(path): 
-            try:
-                print('Downloading fasttext pre-trained model')
-                  
-                url = 'https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin'
-                wget.download(url, path)
-            except:
-                print('Something went wrong when downloading!!')
-                return False
-        return True
 
     def get_nlp_summary(self, column = ''):
         """
@@ -188,7 +138,7 @@ class NLPFrame(pd.DataFrame):
         ------------
         
         '''
-        if not self.check_nltk_dependencies():
+        if not check_nltk_dependencies():
             print('Dependencies are not met. Please read the instructions or contact the developers for further details')
             return None
         
@@ -270,7 +220,7 @@ class NLPFrame(pd.DataFrame):
 # 
 
         
-        if not self.check_nltk_dependencies():
+        if not check_nltk_dependencies():
             print('Dependencies are not met. Please read the instructions or contact the developers for further details')
             return None
         
@@ -350,7 +300,7 @@ class NLPFrame(pd.DataFrame):
         ------------
         '''
 
-        if not self.fasttext_dependencies():
+        if not fasttext_dependencies():
             print('Dependencies are not met. Please read the instructions or contact the developers for further details')
             return None
 
@@ -405,14 +355,14 @@ class NLPFrame(pd.DataFrame):
         >>>> df = nlp.NLPFrame({'text': ['He is a good guy.
                                         This is the worst coffee I had in my life.']})
                                         
-        >>>> df.polarity(df['text'])
+        >>>> df.polarity()
          [1]  | positive words | negative words |
               |         1      |           1    |
         ------------
 
         """
         
-        if not self.check_nltk_dependencies():
+        if not check_nltk_dependencies():
             print('Dependencies are not met. Please read the instructions or contact the developers for further details')
             return None
         
@@ -425,34 +375,19 @@ class NLPFrame(pd.DataFrame):
             raise ValueError(f"The column {column} doesn't exist in the NLPFrame")
         
         
-        try:
-            # loading positive lexicons
-            positive_words = list(pd.read_csv('data/positive-words.txt',skiprows=34, header = 'infer')['words'])
+        # loading positive lexicons
+        positive_words = list(pd.read_csv('data/positive-words.txt',skiprows=34, header = 'infer')['words'])
 
-            
-            # loading negative lexicons
-            negative_words = list(pd.read_csv('data/negative-words.txt',skiprows=34, header='infer')['words'])
         
-        except:
-            print('Error reading Lexicons. Please check if lexicon files are in data directory...')
+        # loading negative lexicons
+        negative_words = list(pd.read_csv('data/negative-words.txt',skiprows=34, header='infer')['words'])
         
-        
-        try:
-        
-            # concat messages for easy processing
-            all_messages = pd_col.str.cat(sep=', ')
-            
-        except:
-            print('Concat failed, please provide valid column of textual data')
+        # concat messages for easy processing
+        all_messages = pd_col.str.cat(sep=', ')
         
         
-        try:
-        
-            # sensing tokens
-            word_tokens = re.findall(r'\b\w[\w-]*\b', all_messages.lower())
-            
-        except:
-            print('Tokenization failed, please provide a valid column of textual data')
+        # sensing tokens
+        word_tokens = re.findall(r'\b\w[\w-]*\b', all_messages.lower())
         
         # counting positive words
         positive_word_count = 0
