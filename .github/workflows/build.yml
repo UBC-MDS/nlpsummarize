@@ -22,6 +22,7 @@ jobs:
         pip install nltk
         pip install pandas
         pip install fasttext
+        pip install pycountry
         pip install pytest
         pip install poetry
         pip install pytest-cov
