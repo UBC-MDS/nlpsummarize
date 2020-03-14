@@ -21,7 +21,10 @@ jobs:
         POETRY_VIRTUALENVS_CREATE: false
       run: |
         pip install nltk
-        python -m nltk.downloader all
+        python -m nltk.downloader punkt
+        python -m nltk.downloader stopwords
+        python -m nltk.downloader averaged_perceptron_tagger
+        python -m nltk.downloader universal_tagset
         pip install pandas
         pip install fasttext
         pip install pycountry

@@ -1,7 +1,7 @@
-from nlpsummarize.part_of_speech import get_part_of_speech
-from nlpsummarize.polarity import polarity
-from nlpsummarize.detect_language import detect_language
-from nlpsummarize.summary_4 import summary_4
+# from nlpsummarize.part_of_speech import get_part_of_speech
+# from nlpsummarize.polarity import polarity
+# from nlpsummarize.detect_language import detect_language
+# from nlpsummarize.summary_4 import summary_4
 from nlpsummarize import nlp
 
 import pandas as pd
@@ -43,17 +43,6 @@ def test_pos_mixture_input():
     a = list(res.columns)
 
     assert a==b, 'The function should return an output even for mixture of English and non-English sentences!'
-
-# def test_pos_invalid_series_input_1():
-#     """
-#     Test function to ensure that the `get_part_of_speech` function throws an error with the input that is not a pandas series
-#     """
-#     not_series_input = 5
-#     try:
-#         res = get_part_of_speech(not_series_input)
-#         assert False, 'The function should not be executed when the input is not a pandas Series!!'
-#     except TypeError:
-#         pass
 
 def test_invalid_pos_input_1():
     """
