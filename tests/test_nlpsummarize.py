@@ -105,3 +105,20 @@ def test_language_works():
     assert test_df.detect_language(column = 'english_text' )['language'][0] == 'English', 'Incorrect Language'
     assert test_df.detect_language(column = 'mandarin_text')['language'][0] == 'Chinese', 'Incorrect Language'
     assert test_df.detect_language(column = 'spanish_text' )['language'][0] == 'Spanish', 'Incorrect Language'
+
+def test_read_csv():
+    """
+    This function will test the read csv functionality in our code.
+    """
+    path = 'data/positive-words.txt'
+    df = nlp.read_csv(path)
+    assert isinstance(df, pd.DataFrame)
+
+def test_read_excel():
+    """
+    This function will test the read excel functionality in our code.
+    """
+    path = 'data/text_data.xlsx'
+    df = nlp.read_excel(path)
+    assert isinstance(df, pd.DataFrame)
+

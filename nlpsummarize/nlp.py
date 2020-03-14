@@ -83,7 +83,7 @@ class NLPFrame(pd.DataFrame):
         """
 
         path = 'model/lid.176.bin'
-        if not os.path.isfile(path): 
+        if not os.path.isfile(path):
             try:
                 print('Downloading fasttext pre-trained model')
                   
@@ -425,7 +425,7 @@ class NLPFrame(pd.DataFrame):
         return pd.DataFrame({'positive_words':positive_word_count, 'negative_words':negative_word_count}, index = [0])
     
 
-def read_csv(csv_path = '', *args, **kwargs):
+def read_csv(csv_path = '', skiprows=34, header = 'infer', *args, **kwargs):
     """
     Read a comma-separated values (csv) file into NLPFrame.
 
@@ -445,7 +445,7 @@ def read_csv(csv_path = '', *args, **kwargs):
     """
     if csv_path == '':
         raise ValueError('Please provide path to the csv file')
-    return NLPFrame(pd.read_csv(csv_path, *args, **kwargs))
+    return NLPFrame(pd.read_csv(csv_path,skiprows=skiprows, header = header, *args, **kwargs))
 
 def read_excel(path = '', *args, **kwargs):
     """
@@ -467,7 +467,7 @@ def read_excel(path = '', *args, **kwargs):
     """
     if path == '':
         raise ValueError('Please provide path to the excel file')
-    return NLPFrame(pd.read_csv(read_excel, *args, **kwargs))
+    return NLPFrame(pd.read_excel(path, *args, **kwargs))
 
 if __name__ == '__main__':
     # ex = pd.DataFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']})
