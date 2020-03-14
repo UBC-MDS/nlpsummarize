@@ -109,6 +109,18 @@ def test_pos_output_columns():
 
     assert a>0, 'The function should return an output even for mixture of English and non-English sentences!'
 
+def test_pos_output_columns_2():
+    """
+    Test function to ensure that the `get_part_of_speech` function error handling
+    """
+
+    initial_df = nlp.NLPFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']}, index = [0,1])
+    try:
+        res = initial_df.get_part_of_speech(show_only=5)
+        assert False, 'The function should throw an error when show_only argument is not valid'
+    except TypeError:
+        pass
+
 def test_polarity_input():
     """
     Test function to ensure that the `polarity` function properly classifies between "good" and "bad" text.
@@ -149,6 +161,29 @@ def test_positive_summary_4():
 
     assert ((res.iloc[0,0] >= 0) & (res.iloc[0,1] >= 0)) , 'Count should be positive'
 
+def test_summary4_1():
+    """
+    Tests summary_4 function for NLPFrame without column with text
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : [5,6,8]})
+    try:
+        initial_df.summary_4()
+        assert False
+    except ValueError:
+        pass
+    
+def test_summary4_2():
+    """
+    Tests summary_4 function for NLPFrame with wrong column specified
+    """
+
+    initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1], column = 'non_existing')
+    try:
+        res = initial_df.summary_4(column = 'non_existing')
+        assert False
+    except ValueError:
+        pass
 
 def test_language_works():
     """

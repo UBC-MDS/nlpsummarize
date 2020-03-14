@@ -181,7 +181,7 @@ class NLPFrame(pd.DataFrame):
                                              coffee. However, startbucks 
                                              is closed.']})
             
-            >>> ex.sentence_stopwords_freq_detection()
+            >>> ex.summary_4()
             
             [1]  | number of sentences | number of stop words | high freq. words |
                  |         2           |           6          |    is(2), a(2)   |    
@@ -302,16 +302,16 @@ class NLPFrame(pd.DataFrame):
         except TypeError:
             raise TypeError('show_only should be iterable object containing values from part of speech')
 
-        try:
-            concatenated_text = '\n'.join(pd_df_col)
-            concatenated_text = nltk.word_tokenize(concatenated_text)
-            tags = nltk.pos_tag(concatenated_text, tagset='universal')
-        except LookupError as e:
-            print("If you haven't done so, please before running get_part_of_speech\
-                    function please run:\n\n>>> nltk.download('punkt')\
-                    \n>>> nltk.download('averaged_perceptron_tagger')\n\
-                    >>> nltk.download('universal_tagset')")
-            return None
+        # try:
+        concatenated_text = '\n'.join(pd_df_col)
+        concatenated_text = nltk.word_tokenize(concatenated_text)
+        tags = nltk.pos_tag(concatenated_text, tagset='universal')
+        # except LookupError as e:
+        #     print("If you haven't done so, please before running get_part_of_speech\
+        #             function please run:\n\n>>> nltk.download('punkt')\
+        #             \n>>> nltk.download('averaged_perceptron_tagger')\n\
+        #             >>> nltk.download('universal_tagset')")
+        #     return None
 
         # Counting part of speech and getting proportions
         counts = {k: 0 for k in lookup_dict.keys()}
