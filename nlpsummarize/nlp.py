@@ -244,10 +244,7 @@ class NLPFrame(pd.DataFrame):
                  |    0.2     |     0.11     |     0.3    |    0.06   |     0.18   |
         ------------
         '''
-        # Adding initial check of the input
-#         if type(pd_df_col) != pd.core.series.Series:
-#             raise TypeError('pd_df_col should be column of a dataframe, i.e. pd.core.series.Series type')
-# 
+
         column = column if column else self.column
         try:
             pd_df_col = self.__getitem__(column)
@@ -478,6 +475,7 @@ if __name__ == '__main__':
         
     #ex2 = NLPFrame({'text_col': ['彼は新しい仕事に本当に満足している','It has been an amazing day today!']})
     #ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!']})
+    #ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!', 'Hola como estas']})
     ex2 = NLPFrame({'text_col': ['This is so good','It has been an amazing day today!', 'Hola como estas']})
     print(ex2.get_nlp_summary())
 
