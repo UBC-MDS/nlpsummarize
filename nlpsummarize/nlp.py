@@ -50,7 +50,7 @@ class NLPFrame(pd.DataFrame):
 
             text_columns = self.select_dtypes(include='object').columns
 
-            if text_columns:
+            if not text_columns.empty:
                 print(f'Found columns containing at least one string: {text_columns}')
                 print(f'Picking the first one: {text_columns[0]}')
                 self.column = text_columns[0]
