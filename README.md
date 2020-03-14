@@ -1,7 +1,6 @@
 ![build](https://github.com/UBC-MDS/nlpsummarize/workflows/build/badge.svg?branch=sentence_detect)
 ![Release](https://github.com/UBC-MDS/nlpsummarize/workflows/Release/badge.svg)
-
-
+[![Documentation Status](https://readthedocs.org/projects/nlpsummarize/badge/?version=latest)](https://nlpsummarize.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/UBC-MDS/nlpsummarize/branch/master/graph/badge.svg)](https://codecov.io/gh/UBC-MDS/nlpsummarize)
 
 
@@ -72,7 +71,7 @@ df.polarity()
 df.summary_4()
 [4] | number of sentences | number of stop words   |        high freq. words                |
     |         1           |           179          |    [(2, I), (1, travelling), (1, to)]  |
-    
+
 df.get_nlp_summary()
 [5]   language | Number of sentences | Stop words  |                         Frequency   | adjective  | noun  |  verb  |  positive_words | negative_words |
   English      |              1      |       179   | [(2, I), (1, travelling), (1, to)]  |    0.125   | 0.125 | 0.3125 |            1    |             0  |
