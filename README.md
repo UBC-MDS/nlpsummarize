@@ -1,3 +1,5 @@
+![build](https://github.com/UBC-MDS/nlpsummarize/workflows/build/badge.svg?branch=sentence_detect)
+
 ## nlpsummarize
 
 Python package that provides a nice summary of all character columns in a pandas dataframe.
