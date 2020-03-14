@@ -96,19 +96,13 @@ class NLPFrame(pd.DataFrame):
         """
         column = column if column else self.column
 
-        if not self.check_nltk_dependencies() or not self.fasttext_dependencies():
-            print('Dependencies are not met. Please read the instructions or contact the developers for further details')
-            return None
+  
+        res = pd.concat((
+            self.detect_language(column=column),
+            self.summary_4(column=column),
+            self.get_part_of_speech(column=column),
+            self.polarity(column=column)), axis=1)
 
-        try:
-            res = pd.concat((
-                self.detect_language(column=column),
-                self.summary_4(column=column),
-                self.get_part_of_speech(column=column),
-                self.polarity(column=column)), axis=1)
-        except ValueError:
-            print(f"The column {column} doesn't exist")
-            res = NLPFrame()
 
         return res
 
@@ -217,10 +211,9 @@ class NLPFrame(pd.DataFrame):
         '''
 
         column = column if column else self.column
-        try:
-            pd_df_col = self.__getitem__(column)
-        except KeyError:
-            raise ValueError(f"The column {column} doesn't exist in the NLPFrame")
+   
+        pd_df_col = self.__getitem__(column)
+    
 
         # Defining mapping of abbreviation to the actual part of speech name.
         lookup_dict = {'ADJ': 'adjective',
@@ -236,11 +229,9 @@ class NLPFrame(pd.DataFrame):
                        '.': 'punctuation'}
 
         # Selecting subset of the part of speech that is interesting to the user
-        try:
-            if show_only:
-                lookup_dict = {k: v for k, v in lookup_dict.items() if v in show_only}
-        except TypeError:
-            raise TypeError('show_only should be iterable object containing values from part of speech')
+    
+        if show_only:
+            lookup_dict = {k: v for k, v in lookup_dict.items() if v in show_only}
 
         try:
             concatenated_text = '\n'.join(pd_df_col)
