@@ -21,6 +21,7 @@ jobs:
       run: |
         pip install pytest
         pip install poetry
+        pip install pytest-cov
         poetry install
     - name: Test with pytest
       run: |
