@@ -121,4 +121,32 @@ def test_read_excel():
     path = 'data/text_data.xlsx'
     df = nlp.read_excel(path)
     assert isinstance(df, pd.DataFrame)
+    
+def test_read_csv_except():
+    """
+    This function will test the read csv functionality in our code.
+    """
+    path = ''
+    
+    try:
+    
+        df = nlp.read_csv(path)
+        assert False
+        
+    except:
+        pass
+
+def test_read_excel_except():
+    """
+    This function will test the read csv functionality in our code.
+    """
+    path = ''
+
+    try:
+
+        df = nlp.read_excel(path)
+        assert False
+        
+    except:
+        pass
 
