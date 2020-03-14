@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nlpsummarize"
-version = "0.1.6"
+version = "0.1.7"
 description = "Python package that provides a nice summary of all character columns in a pandas dataframe."
 authors = ["vigchandra <vignesh.chandrasekaran.100@gmail.com>"]
 license = "MIT"
