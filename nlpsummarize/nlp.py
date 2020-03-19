@@ -19,7 +19,7 @@ class NLPFrame(pd.DataFrame):
     This class implements the extension of pandas DataFrame to give summary of a column
     containing text.
     """
-    def __init__(self, data = None, column = None, *args, **kwargs):
+    def __init__(self, data = None, column = None, fasttext_model = './lid.176.bin', *args, **kwargs):
         """
         Initializing NLPFrame.
 
@@ -32,6 +32,10 @@ class NLPFrame(pd.DataFrame):
             The column name that will be used as default when doing summary. If None,
             the column is seleted automatically.
 
+        fasttext_model: string or Path like object
+            Specifying the path of the fasttext pre-trained model. If the model isn't found
+            there, it will be downloaded and stored in that location automatically
+
         *args:
             Other arguments that are passed to pd.DataFrame during initialization
 
@@ -41,6 +45,8 @@ class NLPFrame(pd.DataFrame):
         super(NLPFrame, self).__init__(data, *args, **kwargs)
 
         # For now, we support only one column
+
+        self.fasttext_model = fasttext_model
 
         if column and column in self.columns:
             self.column = column
@@ -295,7 +301,7 @@ class NLPFrame(pd.DataFrame):
         ------------
         '''
 
-        if not fasttext_dependencies():
+        if not fasttext_dependencies(self.fasttext_model):
             print('Dependencies are not met. Please read the instructions or contact the developers for further details')
             return None
 
@@ -320,8 +326,7 @@ class NLPFrame(pd.DataFrame):
         #         print('Something went wrong when downloading!!')
         #         return False      
 
-        pretrained_model_path = './lid.176.bin'
-        model = fasttext.load_model(pretrained_model_path)
+        model = fasttext.load_model(self.fasttext_model)
         predictions = model.predict(''.join(pd_df_col))
         result = predictions[0][0][-2:]
         language = languages.get(alpha_2 = result)

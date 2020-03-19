@@ -35,14 +35,14 @@ def check_nltk_dependencies():
 
     return True
 
-def fasttext_dependencies():
+def fasttext_dependencies(path = './lid.176.bin'):
     """
     Checks the dependencies to use fasttext package.
 
     If the necessary model is not present in the system, it is downloaded.
     """
 
-    path = './lid.176.bin'
+    
     if not os.path.isfile(path): 
         try:
             print('Downloading fasttext pre-trained model')
@@ -54,5 +54,3 @@ def fasttext_dependencies():
             return False
     return True
 
-check_nltk_dependencies()
-fasttext_dependencies()
