@@ -320,7 +320,7 @@ class NLPFrame(pd.DataFrame):
         #         print('Something went wrong when downloading!!')
         #         return False      
 
-        pretrained_model_path = 'model/lid.176.bin'
+        pretrained_model_path = './lid.176.bin'
         model = fasttext.load_model(pretrained_model_path)
         predictions = model.predict(''.join(pd_df_col))
         result = predictions[0][0][-2:]

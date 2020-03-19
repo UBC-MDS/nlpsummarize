@@ -42,7 +42,7 @@ def fasttext_dependencies():
     If the necessary model is not present in the system, it is downloaded.
     """
 
-    path = 'model/lid.176.bin'
+    path = './lid.176.bin'
     if not os.path.isfile(path): 
         try:
             print('Downloading fasttext pre-trained model')
