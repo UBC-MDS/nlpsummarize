@@ -279,7 +279,6 @@ def test_read_csv_1():
     res = nlp.read_csv('./data/sample_csv.csv')
 
     assert type(res) == nlp.NLPFrame
-
 def test_read_csv_2():
     """
     Testing invalid input
@@ -307,7 +306,7 @@ def test_read_excel_2():
     """
 
     try:
-        nlp.read_csv('non_existing.file')
+        nlp.read_excel('non_existing.file')
         assert False
     except ValueError:
         pass
