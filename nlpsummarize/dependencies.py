@@ -14,6 +14,7 @@ def check_nltk_dependencies():
             nltk.data.find('tokenizers/punkt')
         except LookupError:
             print('Downloading punkt...')
+            nltk.download('universal_tagset')
             nltk.download('punkt')
         
         # Check if stopwords has been downloaded or not, if not do so 

@@ -34,7 +34,8 @@ class NLPFrame(pd.DataFrame):
 
         fasttext_model: string or Path like object
             Specifying the path of the fasttext pre-trained model. If the model isn't found
-            there, it will be downloaded and stored in that location automatically
+            there, it will be downloaded and stored in that location automatically with the 
+            name specified. Default: ./lid.176.bin
 
         *args:
             Other arguments that are passed to pd.DataFrame during initialization
@@ -420,7 +421,7 @@ def read_csv(csv_path = '', *args, **kwargs):
 
     -------------
     Example
-        >>> nlp.read_csv('./data/file.csv')
+        >>> nlp.read_csv('./data/sample_csv.csv')
     """
     try:
         res = NLPFrame(pd.read_csv(csv_path, *args, **kwargs))
@@ -444,7 +445,7 @@ def read_excel(path = '', *args, **kwargs):
 
     -------------
     Example
-        >>> nlp.read_excel('./data/file.xlsx')
+        >>> nlp.read_excel('./data/text_data.xlsx')
     """
     try:
         res = NLPFrame(pd.read_excel(path, *args, **kwargs))
