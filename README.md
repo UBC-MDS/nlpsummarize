@@ -52,9 +52,9 @@ This is a basic example which shows you how to generate a summary:
 
 ``` python
 
-from nlpsummarizer import nlp
-df = nlp.NLPFrame({'text_col' : ['I love travelling to Japan and
-                                eating Mexican food but I can only speak
+from nlpsummarize import nlp
+df = nlp.NLPFrame({'text_col' : ['I love travelling to Japan and\
+                                eating Mexican food but I can only speak\
                                 English!']})
 df.detect_language()
 [1]   | language |
