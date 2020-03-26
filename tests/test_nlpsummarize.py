@@ -189,7 +189,7 @@ def test_polarity_2():
     except ValueError:
         pass
 
-def test_df_summary_4():
+def test_df_sentence_stopwords():
     """
     Test function to ensure that the input data is in string format.
     """
@@ -200,35 +200,35 @@ def test_df_summary_4():
 
     assert type(input_data) == str, 'The inputs are not strings'
 
-def test_positive_summary_4():
+def test_positive_sentence_stopwords():
     """
-    Test function to ensure that the `summary_4` function is properly outputting a positive count.
+    Test function to ensure that the `sentence_stopwords` function is properly outputting a positive count.
     """
     initial_df = nlp.NLPFrame({'text_col': ['The coffee is good', 'I would like to have some']}, index = [0,1])
-    res = initial_df.summary_4()
+    res = initial_df.sentence_stopwords()
 
     assert ((res.iloc[0,0] >= 0) & (res.iloc[0,1] >= 0)) , 'Count should be positive'
 
-def test_summary4_1():
+def test_sentence_stopwords_1():
     """
-    Tests summary_4 function for NLPFrame without column with text
+    Tests sentence_stopwords function for NLPFrame without column with text
     """
 
     initial_df = nlp.NLPFrame({'text_col' : [5,6,8]})
     try:
-        initial_df.summary_4()
+        initial_df.sentence_stopwords()
         assert False
     except ValueError:
         pass
     
-def test_summary4_2():
+def test_sentence_stopwords_2():
     """
-    Tests summary_4 function for NLPFrame with wrong column specified
+    Tests sentence_stopwords function for NLPFrame with wrong column specified
     """
 
     initial_df = nlp.NLPFrame({'text_col' : ['Today is a beautiful Monday and I would love getting a coffee. However, startbucks is closed.','It has been an amazing day today!']}, index = [0,1], column = 'non_existing')
     try:
-        res = initial_df.summary_4(column = 'non_existing')
+        res = initial_df.sentence_stopwords(column = 'non_existing')
         assert False
     except ValueError:
         pass
