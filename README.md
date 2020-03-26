@@ -24,6 +24,7 @@ To the best of our knowledge, there is no any other package that combines all th
 ```
 pip install -i https://test.pypi.org/simple/ nlpsummarize
 ```
+[PyPI Link](https://test.pypi.org/project/nlpsummary-sam-ubcmds/)
 
 ### Features
 
@@ -43,10 +44,13 @@ Below are several functions in our Python package:
 - nltk==3.4.5
 - fasttext==0.9.1
 - itertools==8.0.2
+- pycountry==19.8.18
 
 Please note that the `fasttext` library must use the specific pre-trained model called `lid.176.bin` which can be downloaded [here](https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin).
 
 ### Usage
+
+[Read The Docs](https://nlpsummarize.readthedocs.io/en/latest/?badge=latest)
 
 This is a basic example which shows you how to generate a summary:
 
