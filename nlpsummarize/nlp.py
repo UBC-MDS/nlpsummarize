@@ -109,7 +109,7 @@ class NLPFrame(pd.DataFrame):
 
         return res
 
-    def summary_4(self, nof=3, column = ''):
+    def sentence_stopwords(self, nof=3, column = ''):
         '''
         This function generates the following:
             - number of sentences, 
